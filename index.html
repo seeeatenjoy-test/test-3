@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-	<title>Test</title>
+	<title>Hello, world!</title>
 	<!-- include three.js library -->
 	<script src='js/three.js'></script>
 	<script src='js/OBJLoader.js'></script>
@@ -27,6 +27,7 @@
 		#camera-section {
 			flex: 1; /* Takes up 50% of the height */
 			position: relative;
+			overflow: hidden; /* Prevent scrolling */
 		}
 		#menu-section {
 			flex: 1; /* Takes up 50% of the height */
@@ -34,20 +35,23 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
+			z-index: 1; /* Ensure it's above the renderer */
 		}
 		#dropdown-menu {
 			padding: 10px;
 			font-size: 16px;
+			z-index: 2; /* Ensure it's above everything */
+		}
+		canvas {
+			position: absolute;
+			top: 0;
+			left: 0;
+			z-index: 0; /* Ensure it's below the menu */
 		}
 	</style>
 </head>
 
 <body>
-
-<!-- 
-  Example created by Lee Stemkoski: https://github.com/stemkoski
-  Based on the AR.js library and examples created by Jerome Etienne: https://github.com/jeromeetienne/AR.js/
--->
 
 <!-- Camera Section -->
 <div id="camera-section">
@@ -90,12 +94,15 @@ function initialize()
 		antialias : true,
 		alpha: true
 	});
-	renderer.setClearColor(new THREE.Color('lightgrey'), 0)
-	renderer.setSize( window.innerWidth, window.innerHeight / 2 ); // Set height to 50% of viewport
-	renderer.domElement.style.position = 'absolute'
-	renderer.domElement.style.top = '0px'
-	renderer.domElement.style.left = '0px'
-	document.getElementById('camera-section').appendChild( renderer.domElement );
+	renderer.setClearColor(new THREE.Color('lightgrey'), 0);
+
+	// Set renderer size to match the camera section
+	const cameraSection = document.getElementById('camera-section');
+	renderer.setSize( cameraSection.clientWidth, cameraSection.clientHeight );
+	renderer.domElement.style.position = 'absolute';
+	renderer.domElement.style.top = '0px';
+	renderer.domElement.style.left = '0px';
+	cameraSection.appendChild( renderer.domElement );
 
 	clock = new THREE.Clock();
 	deltaTime = 0;
@@ -111,6 +118,10 @@ function initialize()
 
 	function onResize()
 	{
+		// Update renderer size to match the camera section
+		const cameraSection = document.getElementById('camera-section');
+		renderer.setSize( cameraSection.clientWidth, cameraSection.clientHeight );
+
 		arToolkitSource.onResize()	
 		arToolkitSource.copySizeTo(renderer.domElement)	
 		if ( arToolkitContext.arController !== null )
