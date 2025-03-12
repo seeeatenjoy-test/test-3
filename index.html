@@ -160,7 +160,7 @@ function loadModel(modelName) {
 					currentModel = group.children[0]; // Store the loaded model
 					currentModel.material.side = THREE.FrontSide;
 					currentModel.position.y = 0.25;
-					currentModel.scale.set(1, 1, 1);
+					currentModel.scale.set(0.25, 0.25, 0.25);
 					markerRoot1.add(currentModel); // Add the model to the marker
 				}, onProgress, onError);
 		});
