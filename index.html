@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-	<title>Tester</title>
+	<title>AR Model Switcher</title>
 	<!-- include three.js library -->
 	<script src='js/three.js'></script>
 	<script src='js/OBJLoader.js'></script>
@@ -61,8 +61,8 @@
 <!-- Menu Section -->
 <div id="menu-section">
 	<select id="dropdown-menu">
-		<option value="DeadTree">DeadTree</option>
 		<option value="fish">Fish</option>
+		<option value="cube">Cube</option>
 	</select>
 </div>
 
@@ -148,22 +148,35 @@ function loadModel(modelName) {
 		currentModel = null;
 	}
 
-	// Load the new model
-	new THREE.MTLLoader()
-		.setPath('models/')
-		.load(`${modelName}.mtl`, function (materials) {
-			materials.preload();
-			new THREE.OBJLoader()
-				.setMaterials(materials)
-				.setPath('models/')
-				.load(`${modelName}.obj`, function (group) {
-					currentModel = group.children[0]; // Store the loaded model
-					currentModel.material.side = THREE.FrontSide;
-					currentModel.position.y = 0.25;
-					currentModel.scale.set(0.25, 0.25, 0.25);
-					markerRoot1.add(currentModel); // Add the model to the marker
-				}, onProgress, onError);
+	if (modelName === 'cube') {
+		// Create a cube programmatically
+		const geometry = new THREE.BoxGeometry(1, 1, 1);
+		const material = new THREE.MeshNormalMaterial({
+			transparent: true,
+			opacity: 0.5,
+			side: THREE.DoubleSide
 		});
+		currentModel = new THREE.Mesh(geometry, material);
+		currentModel.position.y = 0.5; // Adjust position
+		markerRoot1.add(currentModel); // Add the cube to the marker
+	} else if (modelName === 'fish') {
+		// Load the fish model from .obj and .mtl files
+		new THREE.MTLLoader()
+			.setPath('models/')
+			.load('fish.mtl', function (materials) {
+				materials.preload();
+				new THREE.OBJLoader()
+					.setMaterials(materials)
+					.setPath('models/')
+					.load('fish.obj', function (group) {
+						currentModel = group.children[0]; // Store the loaded model
+						currentModel.material.side = THREE.DoubleSide;
+						currentModel.position.y = 0.25;
+						currentModel.scale.set(0.25, 0.25, 0.25);
+						markerRoot1.add(currentModel); // Add the model to the marker
+					}, onProgress, onError);
+			});
+	}
 }
 
 function onProgress(xhr) {
