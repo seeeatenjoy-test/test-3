@@ -37,7 +37,6 @@ d 0.170064
 illum 2
 map_Kd Eye_D.jpg
 map_Bump Eye_N.jpg
-refl REF1.jpg
 
 newmtl Eye_white
 Ns 550.955445
@@ -51,4 +50,3 @@ illum 2
 map_Kd Eye_D.jpg
 map_Bump Eye_N.jpg
 map_Ks Eye_D.jpg
-refl REF1.jpg
