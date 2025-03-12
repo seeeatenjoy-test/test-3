@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-	<title>Hello, world!</title>
+	<title>AR Model Switcher</title>
 	<!-- include three.js library -->
 	<script src='js/three.js'></script>
 	<script src='js/OBJLoader.js'></script>
@@ -61,155 +61,130 @@
 <!-- Menu Section -->
 <div id="menu-section">
 	<select id="dropdown-menu">
-		<option value="option1">Option 1</option>
-		<option value="option2">Option 2</option>
-		<option value="option3">Option 3</option>
+		<option value="fish">Fish</option>
+		<option value="pig">Pig</option>
+		<option value="dog">Dog</option>
 	</select>
 </div>
 
 <script>
-
 var scene, camera, renderer, clock, deltaTime, totalTime;
-
 var arToolkitSource, arToolkitContext;
-
 var markerRoot1;
-
-var mesh1;
+var currentModel = null; // Track the currently loaded model
 
 initialize();
 animate();
 
-function initialize()
-{
+function initialize() {
 	scene = new THREE.Scene();
 
-	let ambientLight = new THREE.AmbientLight( 0xcccccc, 1.0 );
-	scene.add( ambientLight );
-				
+	let ambientLight = new THREE.AmbientLight(0xcccccc, 1.0);
+	scene.add(ambientLight);
+
 	camera = new THREE.Camera();
 	scene.add(camera);
 
 	renderer = new THREE.WebGLRenderer({
-		antialias : true,
+		antialias: true,
 		alpha: true
 	});
 	renderer.setClearColor(new THREE.Color('lightgrey'), 0);
-
-	// Set renderer size to match the camera section
-	const cameraSection = document.getElementById('camera-section');
-	renderer.setSize( cameraSection.clientWidth, cameraSection.clientHeight );
+	renderer.setSize(window.innerWidth, window.innerHeight / 2);
 	renderer.domElement.style.position = 'absolute';
 	renderer.domElement.style.top = '0px';
 	renderer.domElement.style.left = '0px';
-	cameraSection.appendChild( renderer.domElement );
+	document.getElementById('camera-section').appendChild(renderer.domElement);
 
 	clock = new THREE.Clock();
 	deltaTime = 0;
 	totalTime = 0;
-	
-	////////////////////////////////////////////////////////////
-	// setup arToolkitSource
-	////////////////////////////////////////////////////////////
 
+	// Setup AR toolkit source and context
 	arToolkitSource = new THREEx.ArToolkitSource({
-		sourceType : 'webcam',
+		sourceType: 'webcam',
 	});
 
-	function onResize()
-	{
-		// Update renderer size to match the camera section
-		const cameraSection = document.getElementById('camera-section');
-		renderer.setSize( cameraSection.clientWidth, cameraSection.clientHeight );
-
-		arToolkitSource.onResize()	
-		arToolkitSource.copySizeTo(renderer.domElement)	
-		if ( arToolkitContext.arController !== null )
-		{
-			arToolkitSource.copySizeTo(arToolkitContext.arController.canvas)	
-		}	
-	}
-
-	arToolkitSource.init(function onReady(){
-		onResize()
+	arToolkitSource.init(function onReady() {
+		onResize();
 	});
-	
-	// handle resize event
-	window.addEventListener('resize', function(){
-		onResize()
-	});
-	
-	////////////////////////////////////////////////////////////
-	// setup arToolkitContext
-	////////////////////////////////////////////////////////////	
 
-	// create atToolkitContext
+	window.addEventListener('resize', function () {
+		onResize();
+	});
+
 	arToolkitContext = new THREEx.ArToolkitContext({
 		cameraParametersUrl: 'data/camera_para.dat',
 		detectionMode: 'mono'
 	});
-	
-	// copy projection matrix to camera when initialization complete
-	arToolkitContext.init( function onCompleted(){
-		camera.projectionMatrix.copy( arToolkitContext.getProjectionMatrix() );
+
+	arToolkitContext.init(function onCompleted() {
+		camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
 	});
 
-	////////////////////////////////////////////////////////////
-	// setup markerRoots
-	////////////////////////////////////////////////////////////
-
-	// build markerControls
+	// Setup marker root
 	markerRoot1 = new THREE.Group();
 	scene.add(markerRoot1);
-	let markerControls1 = new THREEx.ArMarkerControls(arToolkitContext, markerRoot1, {
-		type: 'pattern', patternUrl: "data/hiro.patt",
-	})
 
-	let geometry1 = new THREE.PlaneBufferGeometry(1,1, 4,4);
-	let loader = new THREE.TextureLoader();
-	// let texture = loader.load( 'images/earth.jpg', render );
-	let material1 = new THREE.MeshBasicMaterial( { color: 0x0000ff, opacity: 0.5 } );
-	mesh1 = new THREE.Mesh( geometry1, material1 );
-	mesh1.rotation.x = -Math.PI/2;
-	markerRoot1.add( mesh1 );
-	
-	function onProgress(xhr) { console.log( (xhr.loaded / xhr.total * 100) + '% loaded' ); }
-	function onError(xhr) { console.log( 'An error happened' ); }
-	
+	let markerControls1 = new THREEx.ArMarkerControls(arToolkitContext, markerRoot1, {
+		type: 'pattern',
+		patternUrl: "data/hiro.patt",
+	});
+
+	// Add event listener to the dropdown menu
+	const dropdownMenu = document.getElementById('dropdown-menu');
+	dropdownMenu.addEventListener('change', function (event) {
+		const selectedModel = event.target.value; // Get the selected model name
+		loadModel(selectedModel); // Load the selected model
+	});
+
+	// Load the initial model (e.g., fish)
+	loadModel('fish');
+}
+
+function loadModel(modelName) {
+	// Remove the current model if it exists
+	if (currentModel) {
+		markerRoot1.remove(currentModel);
+		currentModel = null;
+	}
+
+	// Load the new model
 	new THREE.MTLLoader()
-		.setPath( 'models/' )
-		.load( 'fish-2.mtl', function ( materials ) {
+		.setPath('models/')
+		.load(`${modelName}.mtl`, function (materials) {
 			materials.preload();
 			new THREE.OBJLoader()
-				.setMaterials( materials )
-				.setPath( 'models/' )
-				.load( 'fish-2.obj', function ( group ) {
-					mesh0 = group.children[0];
-					mesh0.material.side = THREE.DoubleSide;
-					mesh0.position.y = 0.25;
-					mesh0.scale.set(0.25,0.25,0.25);
-					markerRoot1.add(mesh0);
-				}, onProgress, onError );
+				.setMaterials(materials)
+				.setPath('models/')
+				.load(`${modelName}.obj`, function (group) {
+					currentModel = group.children[0]; // Store the loaded model
+					currentModel.material.side = THREE.DoubleSide;
+					currentModel.position.y = 0.25;
+					currentModel.scale.set(0.25, 0.25, 0.25);
+					markerRoot1.add(currentModel); // Add the model to the marker
+				}, onProgress, onError);
 		});
 }
 
-
-function update()
-{
-	// update artoolkit on every frame
-	if ( arToolkitSource.ready !== false )
-		arToolkitContext.update( arToolkitSource.domElement );
+function onProgress(xhr) {
+	console.log((xhr.loaded / xhr.total * 100) + '% loaded');
 }
 
-
-function render()
-{
-	renderer.render( scene, camera );
+function onError(xhr) {
+	console.log('An error happened');
 }
 
+function update() {
+	if (arToolkitSource.ready !== false)
+		arToolkitContext.update(arToolkitSource.domElement);
+}
 
-function animate()
-{
+function render() {
+	renderer.render(scene, camera);
+}
+
+function animate() {
 	requestAnimationFrame(animate);
 	deltaTime = clock.getDelta();
 	totalTime += deltaTime;
@@ -217,6 +192,15 @@ function animate()
 	render();
 }
 
+function onResize() {
+	const cameraSection = document.getElementById('camera-section');
+	renderer.setSize(cameraSection.clientWidth, cameraSection.clientHeight);
+	arToolkitSource.onResize();
+	arToolkitSource.copySizeTo(renderer.domElement);
+	if (arToolkitContext.arController !== null) {
+		arToolkitSource.copySizeTo(arToolkitContext.arController.canvas);
+	}
+}
 </script>
 
 </body>
