@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-	<title>Hello, world!</title>
+	<title>Test</title>
 	<!-- include three.js library -->
 	<script src='js/three.js'></script>
 	<script src='js/OBJLoader.js'></script>
@@ -15,7 +15,7 @@
 	<script src="threex/threex-arbasecontrols.js"></script>
 	<script src="threex/threex-armarkercontrols.js"></script>
 	<style>
-		/* Add CSS to create two sections */
+		/* Add CSS to create two equal sections */
 		body {
 			margin: 0;
 			overflow: hidden;
@@ -25,11 +25,11 @@
 			height: 100vh;
 		}
 		#camera-section {
-			flex: 1;
+			flex: 1; /* Takes up 50% of the height */
 			position: relative;
 		}
 		#menu-section {
-			flex: 0 0 100px; /* Adjust height as needed */
+			flex: 1; /* Takes up 50% of the height */
 			background-color: #f0f0f0;
 			display: flex;
 			align-items: center;
@@ -91,7 +91,7 @@ function initialize()
 		alpha: true
 	});
 	renderer.setClearColor(new THREE.Color('lightgrey'), 0)
-	renderer.setSize( 640, 480 );
+	renderer.setSize( window.innerWidth, window.innerHeight / 2 ); // Set height to 50% of viewport
 	renderer.domElement.style.position = 'absolute'
 	renderer.domElement.style.top = '0px'
 	renderer.domElement.style.left = '0px'
