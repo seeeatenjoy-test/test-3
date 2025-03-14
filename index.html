@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <title>AR Dish Selector</title>
+    <title>AR Dish DS</title>
     <!-- Include Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <!-- Include FontAwesome for icons -->
@@ -16,7 +16,7 @@
     <script src='js/three.js'></script>
     <script src='js/OBJLoader.js'></script>
     <script src='js/MTLLoader.js'></script>
-    <!-- include jsartookit -->
+    <!-- include jsartoolkit -->
     <script src="jsartoolkit5/artoolkit.min.js"></script>
     <script src="jsartoolkit5/artoolkit.api.js"></script>
     <!-- include threex.artoolkit -->
@@ -48,6 +48,7 @@
             box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             z-index: 10;
+            position: relative;
         }
 
         #top-bar .back-button {
@@ -77,6 +78,7 @@
         /* Camera section styles */
         #camera-section {
             flex: 1;
+            max-height: 50vh; /* Restrict to top half of the screen */
             position: relative;
             overflow: hidden;
             border: 2px solid #333333;
@@ -85,6 +87,7 @@
             margin: 20px;
             border-radius: 15px;
             box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
+            z-index: 1; /* Ensure it's above other elements */
         }
 
         /* Dropdown section styles */
@@ -94,6 +97,7 @@
             align-items: center;
             justify-content: center;
             margin: 20px;
+            z-index: 0; /* Ensure it's below the camera section */
         }
 
         /* Dropdown heading styles */
@@ -147,6 +151,7 @@
             align-items: center;
             justify-content: center;
             margin: 20px;
+            z-index: 0; /* Ensure it's below the camera section */
         }
 
         #popular-dishes-heading {
@@ -219,8 +224,6 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
             z-index: 0;
         }
     </style>
@@ -287,7 +290,7 @@ function initialize() {
         alpha: true
     });
     renderer.setClearColor(new THREE.Color('lightgrey'), 0);
-    renderer.setSize(document.getElementById('camera-section').clientWidth, document.getElementById('camera-section').clientHeight);
+    renderer.setSize(document.getElementById('camera-section').clientWidth, document.getElementById('camera-section').clientHeight); // Set size to match the camera section
     renderer.domElement.style.position = 'absolute';
     renderer.domElement.style.top = '0px';
     renderer.domElement.style.left = '0px';
@@ -305,6 +308,9 @@ function initialize() {
     arToolkitSource.init(function onReady() {
         console.log("arToolkitSource ready");
         onResize();
+    }, function onError(error) {
+        console.error('Error accessing the camera:', error);
+        alert('Camera access denied. Please allow camera access to use AR features.');
     });
 
     window.addEventListener('resize', function () {
@@ -412,8 +418,13 @@ function animate() {
 function onResize() {
     const cameraSection = document.getElementById('camera-section');
     renderer.setSize(cameraSection.clientWidth, cameraSection.clientHeight);
+
+    // Replace deprecated arToolkitSource.onResize() with arToolkitSource.onResizeElement()
     arToolkitSource.onResizeElement();
+
+    // Replace deprecated arToolkitSource.copySizeTo() with arToolkitSource.copyElementSizeTo()
     arToolkitSource.copyElementSizeTo(renderer.domElement);
+
     if (arToolkitContext.arController !== null) {
         arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas);
     }
