@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <title>AR Dish</title>
+    <title>AR Dish Selector</title>
     <!-- Include Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <!-- Include FontAwesome for icons -->
@@ -78,6 +78,7 @@
         /* Camera section styles */
         #camera-section {
             flex: 1;
+            max-height: 50vh; /* Restrict to top half of the screen */
             position: relative;
             overflow: hidden;
             border: 2px solid #333333;
@@ -286,7 +287,7 @@ function initialize() {
         alpha: true
     });
     renderer.setClearColor(new THREE.Color('lightgrey'), 0);
-    renderer.setSize(window.innerWidth - 40, (window.innerHeight - 400) / 2); // Adjust for margins
+    renderer.setSize(document.getElementById('camera-section').clientWidth, document.getElementById('camera-section').clientHeight); // Adjust for the size of the camera section
     renderer.domElement.style.position = 'absolute';
     renderer.domElement.style.top = '0px';
     renderer.domElement.style.left = '0px';
