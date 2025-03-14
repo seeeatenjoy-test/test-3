@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <title>AR Dish DS</title>
+    <title>AR Dish Selector</title>
     <!-- Include Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <!-- Include FontAwesome for icons -->
@@ -268,6 +268,17 @@
 </div>
 
 <script>
+// Patch the getContext method to include willReadFrequently: true
+(function () {
+    const originalGetContext = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = function (type, options) {
+        if (type === '2d') {
+            options = { ...options, willReadFrequently: true };
+        }
+        return originalGetContext.call(this, type, options);
+    };
+})();
+
 var scene, camera, renderer, clock, deltaTime, totalTime;
 var arToolkitSource, arToolkitContext;
 var markerRoot1;
