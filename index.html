@@ -6,7 +6,7 @@
 	<script src='js/three.js'></script>
 	<script src='js/OBJLoader.js'></script>
 	<script src='js/MTLLoader.js'></script>
-	<!-- include jsartookit -->
+	<!-- include jsartoolkit -->
 	<script src="jsartoolkit5/artoolkit.min.js"></script>
 	<script src="jsartoolkit5/artoolkit.api.js"></script>
 	<!-- include threex.artoolkit -->
@@ -207,10 +207,10 @@ function animate() {
 function onResize() {
 	const cameraSection = document.getElementById('camera-section');
 	renderer.setSize(cameraSection.clientWidth, cameraSection.clientHeight);
-	arToolkitSource.onResize();
-	arToolkitSource.copySizeTo(renderer.domElement);
+	arToolkitSource.onResizeElement(); // Updated function
+	arToolkitSource.copyElementSizeTo(renderer.domElement); // Updated function
 	if (arToolkitContext.arController !== null) {
-		arToolkitSource.copySizeTo(arToolkitContext.arController.canvas);
+		arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas); // Updated function
 	}
 }
 </script>
