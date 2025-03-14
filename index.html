@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <title>AR Dish Selector</title>
+    <title>AR Dish GPT</title>
     <!-- Include Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <!-- Include FontAwesome for icons -->
@@ -77,8 +77,7 @@
 
         /* Camera section styles */
         #camera-section {
-            flex: 1;
-            max-height: 50vh; /* Restrict to top half of the screen */
+            height: 50vh; /* Restrict to top half of the screen */
             position: relative;
             overflow: hidden;
             border: 2px solid #333333;
@@ -287,7 +286,7 @@ function initialize() {
         alpha: true
     });
     renderer.setClearColor(new THREE.Color('lightgrey'), 0);
-    renderer.setSize(document.getElementById('camera-section').clientWidth, document.getElementById('camera-section').clientHeight); // Set size to match the camera section
+    renderer.setSize(document.getElementById('camera-section').clientWidth, document.getElementById('camera-section').clientHeight); // Adjust for the size of the camera section
     renderer.domElement.style.position = 'absolute';
     renderer.domElement.style.top = '0px';
     renderer.domElement.style.left = '0px';
@@ -305,9 +304,6 @@ function initialize() {
     arToolkitSource.init(function onReady() {
         console.log("arToolkitSource ready");
         onResize();
-    }, function onError(error) {
-        console.error('Error accessing the camera:', error);
-        alert('Camera access denied. Please allow camera access to use AR features.');
     });
 
     window.addEventListener('resize', function () {
@@ -415,10 +411,10 @@ function animate() {
 function onResize() {
     const cameraSection = document.getElementById('camera-section');
     renderer.setSize(cameraSection.clientWidth, cameraSection.clientHeight);
-    arToolkitSource.onResize();
-    arToolkitSource.copySizeTo(renderer.domElement);
+    arToolkitSource.onResizeElement();
+    arToolkitSource.copyElementSizeTo(renderer.domElement);
     if (arToolkitContext.arController !== null) {
-        arToolkitSource.copySizeTo(arToolkitContext.arController.canvas);
+        arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas);
     }
 }
 
