@@ -2,14 +2,21 @@
 <html lang="en">
 <head>
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-	<title>AR Dish Selector</title>
-	<!-- Include Google Fonts -->
-	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+	<title>AR Model Switcher</title>
+	<!-- Include three.js library -->
+	<script src='js/three.js'></script>
+	<script src='js/OBJLoader.js'></script>
+	<script src='js/MTLLoader.js'></script>
+	<!-- Include jsartoolkit -->
+	<script src="jsartoolkit5/artoolkit.min.js"></script>
+	<script src="jsartoolkit5/artoolkit.api.js"></script>
+	<!-- Include threex.artoolkit -->
+	<script src="threex/threex-artoolkitsource.js"></script>
+	<script src="threex/threex-artoolkitcontext.js"></script>
+	<script src="threex/threex-arbasecontrols.js"></script>
+	<script src="threex/threex-armarkercontrols.js"></script>
 	<!-- Include FontAwesome for icons -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-	<!-- Include Select2 for a better dropdown -->
-	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 	<style>
 		/* General styles */
 		body {
@@ -287,8 +294,12 @@ function initialize() {
 		sourceType: 'webcam',
 	});
 
+	// Initialize AR toolkit source
 	arToolkitSource.init(function onReady() {
 		onResize();
+	}, function onError(error) {
+		console.error('Error accessing the camera:', error);
+		alert('Camera access denied. Please allow camera access to use AR features.');
 	});
 
 	window.addEventListener('resize', function () {
@@ -313,14 +324,9 @@ function initialize() {
 		patternUrl: "data/hiro.patt",
 	});
 
-	// Initialize Select2 for the dropdown
-	$('#dropdown-menu').select2({
-		placeholder: "Select a dish",
-		allowClear: true
-	});
-
 	// Add event listener to the dropdown menu
-	$('#dropdown-menu').on('change', function (event) {
+	const dropdownMenu = document.getElementById('dropdown-menu');
+	dropdownMenu.addEventListener('change', function (event) {
 		const selectedModel = event.target.value; // Get the selected model name
 		loadModel(selectedModel); // Load the selected model
 	});
