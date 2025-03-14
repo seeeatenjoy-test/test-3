@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-	<title>AR Model Switcher</title>
+	<title>AR Dish Selector</title>
 	<!-- Include Google Fonts -->
 	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
 	<!-- Include three.js library -->
@@ -20,137 +20,15 @@
 	<!-- Include Select2 for a better dropdown -->
 	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-	<style>
-		/* General styles */
-		body {
-			margin: 0;
-			overflow: hidden;
-			font-family: 'Lato', sans-serif;
-			display: flex;
-			flex-direction: column;
-			height: 100vh;
-			background-color: #000000;
-			color: #ffffff;
-		}
-
-		/* Top bar styles */
-		#top-bar {
-			height: 80px;
-			background-color: #111111;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			padding: 0 20px;
-			box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
-			z-index: 10;
-			position: relative;
-		}
-
-		#top-bar .back-button {
-			background: none;
-			border: none;
-			color: #ffffff;
-			font-size: 16px;
-			cursor: pointer;
-			font-weight: 500;
-			position: absolute;
-			left: 20px;
-		}
-
-		#top-bar .logo {
-			font-size: 28px;
-			font-weight: 700;
-			color: #ffffff;
-			font-family: 'Playfair Display', serif;
-			text-align: center;
-		}
-
-		/* Camera section styles */
-		#camera-section {
-			flex: 1;
-			position: relative;
-			overflow: hidden;
-			border: 2px solid #333333;
-			box-sizing: border-box;
-			background-color: #000000;
-			margin: 20px;
-			border-radius: 15px;
-			box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
-		}
-
-		/* Menu section styles */
-		#menu-section {
-			flex: 1;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			background-color: #111111;
-			margin: 20px;
-			border-radius: 15px;
-			box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
-			padding: 20px;
-		}
-
-		/* Dropdown heading styles */
-		#dropdown-heading {
-			font-size: 18px;
-			font-weight: 500;
-			margin-bottom: 10px;
-			color: #ffffff;
-			font-family: 'Playfair Display', serif;
-		}
-
-		/* Dropdown styles */
-		.select2-container {
-			width: 250px !important;
-		}
-
-		.select2-selection {
-			border: 2px solid #444444 !important;
-			border-radius: 10px !important;
-			height: 45px !important;
-			display: flex !important;
-			align-items: center !important;
-			background-color: #222222 !important;
-			color: #ffffff !important;
-		}
-
-		.select2-selection__arrow {
-			height: 43px !important;
-			color: #ffffff !important;
-		}
-
-		.select2-dropdown {
-			border: 2px solid #444444 !important;
-			border-radius: 10px !important;
-			box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
-			background-color: #222222 !important;
-		}
-
-		.select2-results__option {
-			color: #ffffff !important;
-		}
-
-		.select2-results__option--highlighted {
-			background-color: #444444 !important;
-		}
-
-		/* Canvas styles */
-		canvas {
-			position: absolute;
-			top: 0;
-			left: 0;
-			z-index: 0;
-		}
-	</style>
+	<!-- Include custom CSS -->
+	<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <!-- Top Bar -->
 <div id="top-bar">
 	<button class="back-button" onclick="window.history.back()">← Back</button>
-	<div class="logo">AR App</div>
+	<div class="logo">AR Dish Selector</div>
 </div>
 
 <!-- Camera Section -->
@@ -158,13 +36,30 @@
 	<!-- The renderer will be appended here by three.js -->
 </div>
 
-<!-- Menu Section -->
-<div id="menu-section">
-	<div id="dropdown-heading">Select a Model</div>
+<!-- Dropdown Section -->
+<div id="dropdown-section">
+	<div id="dropdown-heading">Select a Dish</div>
 	<select id="dropdown-menu">
 		<option value="fish">Fish</option>
 		<option value="cube">Cube</option>
 	</select>
+</div>
+
+<!-- Popular Dishes Section -->
+<div id="popular-dishes-section">
+	<div id="popular-dishes-heading">Popular Dishes at XYZ Restaurant</div>
+	<div id="carousel">
+		<button class="carousel-arrow left" onclick="scrollCarousel(-1)">&#10094;</button>
+		<div id="carousel-container">
+			<div class="carousel-item">Dish 1</div>
+			<div class="carousel-item">Dish 2</div>
+			<div class="carousel-item">Dish 3</div>
+			<div class="carousel-item">Dish 4</div>
+			<div class="carousel-item">Dish 5</div>
+			<div class="carousel-item">Dish 6</div>
+		</div>
+		<button class="carousel-arrow right" onclick="scrollCarousel(1)">&#10095;</button>
+	</div>
 </div>
 
 <script>
@@ -190,7 +85,7 @@ function initialize() {
 		alpha: true
 	});
 	renderer.setClearColor(new THREE.Color('lightgrey'), 0);
-	renderer.setSize(window.innerWidth - 40, (window.innerHeight - 200) / 2); // Adjust for margins
+	renderer.setSize(window.innerWidth - 40, (window.innerHeight - 400) / 2); // Adjust for margins
 	renderer.domElement.style.position = 'absolute';
 	renderer.domElement.style.top = '0px';
 	renderer.domElement.style.left = '0px';
@@ -233,7 +128,7 @@ function initialize() {
 
 	// Initialize Select2 for the dropdown
 	$('#dropdown-menu').select2({
-		placeholder: "Select a model",
+		placeholder: "Select a dish",
 		allowClear: true
 	});
 
@@ -318,6 +213,13 @@ function onResize() {
 	if (arToolkitContext.arController !== null) {
 		arToolkitSource.copySizeTo(arToolkitContext.arController.canvas);
 	}
+}
+
+// Carousel functionality
+function scrollCarousel(direction) {
+	const carousel = document.getElementById('carousel-container');
+	const scrollAmount = 160; // Width of one item + margin
+	carousel.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
 }
 </script>
 
