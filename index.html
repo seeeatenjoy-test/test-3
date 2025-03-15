@@ -1,374 +1,374 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	<title>SEE AR View</title>
-	<!-- Include three.js library -->
-	<script src="https://cdn.jsdelivr.net/npm/three@0.146/build/three.min.js"></script>
-	<!-- Include GLTFLoader from CDN -->
-	<script src="https://cdn.jsdelivr.net/npm/three@0.146/examples/js/loaders/GLTFLoader.js"></script>
-	<!-- Include jsartoolkit -->
-	<script src="https://cdn.jsdelivr.net/npm/jsartoolkit5@0.0.7/build/artoolkit.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/jsartoolkit5@0.0.7/build/artoolkit.api.js"></script>
-	<!-- Include threex.artoolkit (updated version) -->
-	<script src="https://raw.githack.com/artoolkit/jsartoolkit5/master/three.js/threex/threex-artoolkitsource.js"></script>
-	<script src="https://raw.githack.com/artoolkit/jsartoolkit5/master/three.js/threex/threex-artoolkitcontext.js"></script>
-	<script src="https://raw.githack.com/artoolkit/jsartoolkit5/master/three.js/threex/threex-arbasecontrols.js"></script>
-	<script src="https://raw.githack.com/artoolkit/jsartoolkit5/master/three.js/threex/threex-armarkercontrols.js"></script>
-	<!-- Include Google Fonts for Markazi Text -->
-	<link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;500;600;700&display=swap" rel="stylesheet">
-	<style>
-		/* Global Styles */
-		body {
-			margin: 0;
-			overflow: hidden;
-			font-family: 'Markazi Text', serif;
-			background-color: #000;
-			color: #fff;
-			display: flex;
-			flex-direction: column;
-			height: 100vh;
-		}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SEE AR Demo</title>
+    <!-- Include three.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.146/build/three.min.js"></script>
+    <!-- Include GLTFLoader from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.146/examples/js/loaders/GLTFLoader.js"></script>
+    <!-- Include jsartoolkit -->
+    <script src="https://cdn.jsdelivr.net/npm/jsartoolkit5@0.0.7/build/artoolkit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsartoolkit5@0.0.7/build/artoolkit.api.js"></script>
+    <!-- Include threex.artoolkit from a reliable source -->
+    <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/ar.js/three.js/threex/threex-artoolkitsource.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/ar.js/three.js/threex/threex-artoolkitcontext.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/ar.js/three.js/threex/threex-arbasecontrols.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/ar.js/three.js/threex/threex-armarkercontrols.js"></script>
+    <!-- Include Google Fonts for Markazi Text -->
+    <link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Markazi Text', serif;
+            background-color: #000;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
 
-		/* Camera Section */
-		#camera-section {
-			flex: 1.1; /* Increased by 10% */
-			position: relative;
-			overflow: hidden;
-		}
+        /* Camera Section */
+        #camera-section {
+            flex: 1.1; /* Increased by 10% */
+            position: relative;
+            overflow: hidden;
+        }
 
-		#arjs-wrapper {
-			position: relative;
-			width: 100%;
-			height: 100%;
-			overflow: hidden;
-		}
+        #arjs-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
 
-		/* Menu Section */
-		#menu-section {
-			flex: 0.9; /* Adjusted to fit the remaining space */
-			background: rgba(17, 17, 17, 0.8); /* Semi-transparent black */
-			backdrop-filter: blur(10px); /* Frosted glass effect */
-			padding: 20px;
-			display: flex;
-			flex-direction: column;
-			align-items: flex-start;
-			justify-content: flex-start;
-			z-index: 1;
-			overflow-y: hidden; /* Prevent scrolling */
-		}
+        /* Menu Section */
+        #menu-section {
+            flex: 0.9; /* Adjusted to fit the remaining space */
+            background: rgba(17, 17, 17, 0.8); /* Semi-transparent black */
+            backdrop-filter: blur(10px); /* Frosted glass effect */
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            z-index: 1;
+            overflow-y: hidden; /* Prevent scrolling */
+        }
 
-		#dropdown-headline {
-			font-size: 18px;
-			font-weight: 700;
-			color: #fff; /* White color */
-			margin-bottom: 10px;
-		}
+        #dropdown-headline {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff; /* White color */
+            margin-bottom: 10px;
+        }
 
-		#dropdown-menu {
-			padding: 10px;
-			font-size: 14px;
-			background: rgba(34, 34, 34, 0.8); /* Semi-transparent black */
-			color: #fff; /* White color */
-			border: 1px solid #444;
-			border-radius: 5px;
-			width: 100%;
-			margin-bottom: 20px;
-			backdrop-filter: blur(5px); /* Frosted glass effect */
-		}
+        #dropdown-menu {
+            padding: 10px;
+            font-size: 14px;
+            background: rgba(34, 34, 34, 0.8); /* Semi-transparent black */
+            color: #fff; /* White color */
+            border: 1px solid #444;
+            border-radius: 5px;
+            width: 100%;
+            margin-bottom: 20px;
+            backdrop-filter: blur(5px); /* Frosted glass effect */
+        }
 
-		#popular-dishes-headline {
-			font-size: 18px;
-			font-weight: 700;
-			color: #fff; /* White color */
-			margin-bottom: 10px;
-		}
+        #popular-dishes-headline {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff; /* White color */
+            margin-bottom: 10px;
+        }
 
-		/* Carousel Styles */
-		#carousel {
-			display: flex;
-			align-items: center;
-			justify-content: flex-start;
-			width: 100%;
-			overflow-x: auto; /* Horizontal scrolling */
-			scroll-behavior: smooth;
-			gap: 10px;
-		}
+        /* Carousel Styles */
+        #carousel {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+            overflow-x: auto; /* Horizontal scrolling */
+            scroll-behavior: smooth;
+            gap: 10px;
+        }
 
-		.carousel-item {
-			flex: 0 0 auto;
-			width: 80px;
-			height: 80px;
-			background-color: #333;
-			border-radius: 10px;
-			display: flex;
-			align-items: flex-end;
-			justify-content: center;
-			position: relative;
-			overflow: hidden;
-			border: 1px solid #444; /* Subtle border */
-		}
+        .carousel-item {
+            flex: 0 0 auto;
+            width: 80px;
+            height: 80px;
+            background-color: #333;
+            border-radius: 10px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #444; /* Subtle border */
+        }
 
-		.carousel-item img {
-			width: 100%;
-			height: 100%;
-			object-fit: cover;
-		}
+        .carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-		.carousel-item p {
-			position: absolute;
-			bottom: 5px;
-			font-size: 10px;
-			font-weight: 500;
-			color: #fff; /* White color */
-			text-align: center;
-			background-color: rgba(0, 0, 0, 0.7);
-			padding: 3px;
-			width: 100%;
-		}
+        .carousel-item p {
+            position: absolute;
+            bottom: 5px;
+            font-size: 10px;
+            font-weight: 500;
+            color: #fff; /* White color */
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 3px;
+            width: 100%;
+        }
 
-		/* Bottom Navbar */
-		#bottom-navbar {
-			position: fixed;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			padding: 10px 20px;
-			background: rgba(0, 0, 0, 0.9); /* Semi-transparent black */
-			backdrop-filter: blur(10px); /* Frosted glass effect */
-			border-top: 1px solid rgba(255, 255, 255, 0.1); /* White glow */
-			box-shadow: 0 -2px 10px rgba(255, 255, 255, 0.1); /* White shadow */
-			z-index: 1000;
-			height: 60px; /* Fixed height */
-		}
+        /* Bottom Navbar */
+        #bottom-navbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.9); /* Semi-transparent black */
+            backdrop-filter: blur(10px); /* Frosted glass effect */
+            border-top: 1px solid rgba(255, 255, 255, 0.1); /* White glow */
+            box-shadow: 0 -2px 10px rgba(255, 255, 255, 0.1); /* White shadow */
+            z-index: 1000;
+            height: 60px; /* Fixed height */
+        }
 
-		#back-button {
-			font-size: 16px;
-			font-weight: 500;
-			color: #fff; /* White color */
-			text-decoration: none;
-			cursor: pointer;
-		}
+        #back-button {
+            font-size: 16px;
+            font-weight: 500;
+            color: #fff; /* White color */
+            text-decoration: none;
+            cursor: pointer;
+        }
 
-		#logo {
-			font-size: 20px;
-			font-weight: 700;
-			color: #fff; /* White color */
-		}
+        #logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff; /* White color */
+        }
 
-		/* Hide scrollbar for carousel */
-		#carousel::-webkit-scrollbar {
-			display: none;
-		}
-	</style>
+        /* Hide scrollbar for carousel */
+        #carousel::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-	<!-- Camera Section -->
-	<div id="camera-section">
-		<div id="arjs-wrapper"></div>
-	</div>
+    <!-- Camera Section -->
+    <div id="camera-section">
+        <div id="arjs-wrapper"></div>
+    </div>
 
-	<!-- Menu Section -->
-	<div id="menu-section">
-		<div id="dropdown-headline">Select A Dish</div>
-		<select id="dropdown-menu">
-			<option value="fish">Fish</option>
-			<option value="sushi">Sushi</option>
-			<option value="burger">Burger</option>
-		</select>
+    <!-- Menu Section -->
+    <div id="menu-section">
+        <div id="dropdown-headline">Select A Dish</div>
+        <select id="dropdown-menu">
+            <option value="fish">Fish</option>
+            <option value="sushi">Sushi</option>
+            <option value="burger">Burger</option>
+        </select>
 
-		<div id="popular-dishes-headline">Popular Dishes</div>
-		<div id="carousel">
-			<!-- Carousel items will be dynamically added here -->
-		</div>
-	</div>
+        <div id="popular-dishes-headline">Popular Dishes</div>
+        <div id="carousel">
+            <!-- Carousel items will be dynamically added here -->
+        </div>
+    </div>
 
-	<!-- Bottom Navbar -->
-	<div id="bottom-navbar">
-		<a id="back-button">&#8592; Back</a>
-		<div id="logo">SeeEatEnjoy!</div>
-	</div>
+    <!-- Bottom Navbar -->
+    <div id="bottom-navbar">
+        <a id="back-button">&#8592; Back</a>
+        <div id="logo">SeeEatEnjoy!</div>
+    </div>
 
-	<script>
-		var THREEx = THREEx || {};
-		THREEx.wrapperElement = null;
-		THREEx.setWrapperElement = function(wrapperEl, video) {
-			THREEx.wrapperElement = wrapperEl;
-			wrapperEl.appendChild(video);
-		};
+    <script>
+        var THREEx = THREEx || {};
+        THREEx.wrapperElement = null;
+        THREEx.setWrapperElement = function(wrapperEl, video) {
+            THREEx.wrapperElement = wrapperEl;
+            wrapperEl.appendChild(video);
+        };
 
-		var scene, camera, renderer, clock, deltaTime, totalTime;
-		var arToolkitSource, arToolkitContext;
-		var markerRoot1;
-		var currentModel = null; // Track the currently loaded model
+        var scene, camera, renderer, clock, deltaTime, totalTime;
+        var arToolkitSource, arToolkitContext;
+        var markerRoot1;
+        var currentModel = null; // Track the currently loaded model
 
-		// List of dishes with their image names
-		const dishes = [
-			{ name: "Chicken Tikka", image: "chicken-tikka.jpg" },
-			{ name: "Pasta Alfredo", image: "pasta-alfredo.jpg" },
-			{ name: "Grilled Salmon", image: "grilled-salmon.jpg" },
-			{ name: "Beef Steak", image: "beef-steak.jpg" },
-			{ name: "Vegetable Curry", image: "vegetable-curry.jpg" }
-		];
+        // List of dishes with their image names
+        const dishes = [
+            { name: "Chicken Tikka", image: "chicken-tikka.jpg" },
+            { name: "Pasta Alfredo", image: "pasta-alfredo.jpg" },
+            { name: "Grilled Salmon", image: "grilled-salmon.jpg" },
+            { name: "Beef Steak", image: "beef-steak.jpg" },
+            { name: "Vegetable Curry", image: "vegetable-curry.jpg" }
+        ];
 
-		// Function to dynamically add carousel items
-		function populateCarousel() {
-			const carousel = document.getElementById('carousel');
-			dishes.forEach(dish => {
-				const carouselItem = document.createElement('div');
-				carouselItem.classList.add('carousel-item');
+        // Function to dynamically add carousel items
+        function populateCarousel() {
+            const carousel = document.getElementById('carousel');
+            dishes.forEach(dish => {
+                const carouselItem = document.createElement('div');
+                carouselItem.classList.add('carousel-item');
 
-				const img = document.createElement('img');
-				img.src = `images/${dish.image}`; // Path to images folder
-				img.alt = dish.name;
+                const img = document.createElement('img');
+                img.src = `images/${dish.image}`; // Path to images folder
+                img.alt = dish.name;
 
-				const p = document.createElement('p');
-				p.textContent = dish.name;
+                const p = document.createElement('p');
+                p.textContent = dish.name;
 
-				carouselItem.appendChild(img);
-				carouselItem.appendChild(p);
-				carousel.appendChild(carouselItem);
-			});
-		}
+                carouselItem.appendChild(img);
+                carouselItem.appendChild(p);
+                carousel.appendChild(carouselItem);
+            });
+        }
 
-		// Initialize the carousel
-		populateCarousel();
+        // Initialize the carousel
+        populateCarousel();
 
-		initialize();
-		animate();
+        initialize();
+        animate();
 
-		function initialize() {
-			scene = new THREE.Scene();
+        function initialize() {
+            scene = new THREE.Scene();
 
-			let ambientLight = new THREE.AmbientLight(0xcccccc, 1.0);
-			scene.add(ambientLight);
+            let ambientLight = new THREE.AmbientLight(0xcccccc, 1.0);
+            scene.add(ambientLight);
 
-			camera = new THREE.Camera();
-			scene.add(camera);
+            camera = new THREE.Camera();
+            scene.add(camera);
 
-			renderer = new THREE.WebGLRenderer({
-				antialias: true,
-				alpha: true
-			});
-			renderer.setClearColor(new THREE.Color('lightgrey'), 0);
-			renderer.setSize(window.innerWidth, window.innerHeight * 0.6); /* Adjusted for 10% increase */
-			renderer.domElement.style.position = 'absolute';
-			renderer.domElement.style.top = '0px';
-			renderer.domElement.style.left = '0px';
+            renderer = new THREE.WebGLRenderer({
+                antialias: true,
+                alpha: true
+            });
+            renderer.setClearColor(new THREE.Color('lightgrey'), 0);
+            renderer.setSize(window.innerWidth, window.innerHeight * 0.6); /* Adjusted for 10% increase */
+            renderer.domElement.style.position = 'absolute';
+            renderer.domElement.style.top = '0px';
+            renderer.domElement.style.left = '0px';
 
-			// Append the renderer to the wrapper
-			const wrapper = document.getElementById('arjs-wrapper');
-			wrapper.appendChild(renderer.domElement);
+            // Append the renderer to the wrapper
+            const wrapper = document.getElementById('arjs-wrapper');
+            wrapper.appendChild(renderer.domElement);
 
-			clock = new THREE.Clock();
-			deltaTime = 0;
-			totalTime = 0;
+            clock = new THREE.Clock();
+            deltaTime = 0;
+            totalTime = 0;
 
-			// Setup AR toolkit source and context
-			arToolkitSource = new THREEx.ArToolkitSource({
-				sourceType: 'webcam',
-			});
+            // Setup AR toolkit source and context
+            arToolkitSource = new THREEx.ArToolkitSource({
+                sourceType: 'webcam',
+            });
 
-			arToolkitSource.init(function onReady() {
-				// Set the wrapper element and reparent the video
-				THREEx.setWrapperElement(wrapper, arToolkitSource.domElement);
-				onResize();
-			});
+            arToolkitSource.init(function onReady() {
+                // Set the wrapper element and reparent the video
+                THREEx.setWrapperElement(wrapper, arToolkitSource.domElement);
+                onResize();
+            });
 
-			window.addEventListener('resize', function () {
-				onResize();
-			});
+            window.addEventListener('resize', function () {
+                onResize();
+            });
 
-			arToolkitContext = new THREEx.ArToolkitContext({
-				cameraParametersUrl: 'data/camera_para.dat',
-				detectionMode: 'mono'
-			});
+            arToolkitContext = new THREEx.ArToolkitContext({
+                cameraParametersUrl: 'data/camera_para.dat',
+                detectionMode: 'mono'
+            });
 
-			arToolkitContext.init(function onCompleted() {
-				camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
-			});
+            arToolkitContext.init(function onCompleted() {
+                camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
+            });
 
-			// Setup marker root
-			markerRoot1 = new THREE.Group();
-			scene.add(markerRoot1);
+            // Setup marker root
+            markerRoot1 = new THREE.Group();
+            scene.add(markerRoot1);
 
-			let markerControls1 = new THREEx.ArMarkerControls(arToolkitContext, markerRoot1, {
-				type: 'pattern',
-				patternUrl: "data/hiro.patt",
-			});
+            let markerControls1 = new THREEx.ArMarkerControls(arToolkitContext, markerRoot1, {
+                type: 'pattern',
+                patternUrl: "data/hiro.patt",
+            });
 
-			// Add event listener to the dropdown menu
-			const dropdownMenu = document.getElementById('dropdown-menu');
-			dropdownMenu.addEventListener('change', function (event) {
-				const selectedModel = event.target.value; // Get the selected model name
-				loadModel(selectedModel); // Load the selected model
-			});
+            // Add event listener to the dropdown menu
+            const dropdownMenu = document.getElementById('dropdown-menu');
+            dropdownMenu.addEventListener('change', function (event) {
+                const selectedModel = event.target.value; // Get the selected model name
+                loadModel(selectedModel); // Load the selected model
+            });
 
-			// Load the initial model (e.g., fish)
-			loadModel('fish');
-		}
+            // Load the initial model (e.g., fish)
+            loadModel('fish');
+        }
 
-		function loadModel(modelName) {
-			// Remove the current model if it exists
-			if (currentModel) {
-				markerRoot1.remove(currentModel);
-				currentModel = null;
-			}
+        function loadModel(modelName) {
+            // Remove the current model if it exists
+            if (currentModel) {
+                markerRoot1.remove(currentModel);
+                currentModel = null;
+            }
 
-			// Instantiate a loader
-			const loader = new THREE.GLTFLoader();
+            // Instantiate a loader
+            const loader = new THREE.GLTFLoader();
 
-			// Load a GLB resource
-			loader.load(
-				`models/${modelName}.glb`, // Resource URL
-				function (gltf) {
-					currentModel = gltf.scene;
-					currentModel.scale.set(0.25, 0.25, 0.25); // Adjust scale as needed
-					currentModel.position.y = 0.25; // Adjust position
-					markerRoot1.add(currentModel); // Add the model to the marker
-				},
-				function (xhr) {
-					console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-				},
-				function (error) {
-					console.error('An error happened while loading the model:', error);
-				}
-			);
-		}
+            // Load a GLB resource
+            loader.load(
+                `models/${modelName}.glb`, // Resource URL
+                function (gltf) {
+                    currentModel = gltf.scene;
+                    currentModel.scale.set(0.25, 0.25, 0.25); // Adjust scale as needed
+                    currentModel.position.y = 0.25; // Adjust position
+                    markerRoot1.add(currentModel); // Add the model to the marker
+                },
+                function (xhr) {
+                    console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+                },
+                function (error) {
+                    console.error('An error happened while loading the model:', error);
+                }
+            );
+        }
 
-		function update() {
-			if (arToolkitSource.ready !== false)
-				arToolkitContext.update(arToolkitSource.domElement);
-		}
+        function update() {
+            if (arToolkitSource.ready !== false)
+                arToolkitContext.update(arToolkitSource.domElement);
+        }
 
-		function render() {
-			renderer.render(scene, camera);
-		}
+        function render() {
+            renderer.render(scene, camera);
+        }
 
-		function animate() {
-			requestAnimationFrame(animate);
-			deltaTime = clock.getDelta();
-			totalTime += deltaTime;
-			update();
-			render();
-		}
+        function animate() {
+            requestAnimationFrame(animate);
+            deltaTime = clock.getDelta();
+            totalTime += deltaTime;
+            update();
+            render();
+        }
 
-		function onResize() {
-			const cameraSection = document.getElementById('camera-section');
-			const wrapper = document.getElementById('arjs-wrapper');
-			wrapper.style.width = cameraSection.clientWidth + 'px';
-			wrapper.style.height = cameraSection.clientHeight + 'px';
-			renderer.setSize(cameraSection.clientWidth, cameraSection.clientHeight);
-			arToolkitSource.onResizeElement(); // Updated function
-			arToolkitSource.copyElementSizeTo(renderer.domElement); // Updated function
-			if (arToolkitContext.arController !== null) {
-				arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas); // Updated function
-			}
-		}
-	</script>
+        function onResize() {
+            const cameraSection = document.getElementById('camera-section');
+            const wrapper = document.getElementById('arjs-wrapper');
+            wrapper.style.width = cameraSection.clientWidth + 'px';
+            wrapper.style.height = cameraSection.clientHeight + 'px';
+            renderer.setSize(cameraSection.clientWidth, cameraSection.clientHeight);
+            arToolkitSource.onResizeElement(); // Updated function
+            arToolkitSource.copyElementSizeTo(renderer.domElement); // Updated function
+            if (arToolkitContext.arController !== null) {
+                arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas); // Updated function
+            }
+        }
+    </script>
 </body>
 </html>
