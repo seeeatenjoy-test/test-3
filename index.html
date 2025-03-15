@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<!-- Ensure proper scaling on mobile devices -->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	<title>AR Model Switcher</title>
+	<title>SEE AR</title>
 	<!-- Include three.js library -->
 	<script src='js/three.js'></script>
 	<script src='js/OBJLoader.js'></script>
@@ -25,7 +25,7 @@
 			margin: 0;
 			overflow: hidden;
 			font-family: 'Markazi Text', serif;
-			background-color: #000;
+			background: linear-gradient(45deg, #1a1a1a, #000); /* Super light gradient */
 			color: #fff;
 			display: flex;
 			flex-direction: column;
@@ -34,9 +34,10 @@
 
 		/* Camera Section */
 		#camera-section {
-			flex: 1;
+			flex: 1.1; /* Increased by 10% */
 			position: relative;
 			overflow: hidden;
+			background: #000; /* Solid black for camera feed */
 		}
 
 		#arjs-wrapper {
@@ -48,7 +49,7 @@
 
 		/* Menu Section */
 		#menu-section {
-			flex: 1;
+			flex: 0.9; /* Adjusted to fit the remaining space */
 			background: rgba(17, 17, 17, 0.8); /* Semi-transparent black */
 			backdrop-filter: blur(10px); /* Frosted glass effect */
 			padding: 20px;
@@ -192,7 +193,7 @@
 	<!-- Bottom Navbar -->
 	<div id="bottom-navbar">
 		<a id="back-button">&#8592; Back</a>
-		<div id="logo">Luxury AR</div>
+		<div id="logo">SeeEatEnjoy</div>
 	</div>
 
 	<script>
@@ -257,7 +258,7 @@
 				alpha: true
 			});
 			renderer.setClearColor(new THREE.Color('lightgrey'), 0);
-			renderer.setSize(window.innerWidth, window.innerHeight / 2); /* Half height for camera */
+			renderer.setSize(window.innerWidth, window.innerHeight * 0.6); /* Adjusted for 10% increase */
 			renderer.domElement.style.position = 'absolute';
 			renderer.domElement.style.top = '0px';
 			renderer.domElement.style.left = '0px';
