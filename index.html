@@ -1,242 +1,406 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-	<title>AR Switcher</title>
-	<!-- include three.js library -->
+	<title>AR Model Switcher</title>
+	<!-- Include three.js library -->
 	<script src='js/three.js'></script>
 	<script src='js/OBJLoader.js'></script>
 	<script src='js/MTLLoader.js'></script>
-	<!-- include jsartoolkit -->
+	<!-- Include jsartoolkit -->
 	<script src="jsartoolkit5/artoolkit.min.js"></script>
 	<script src="jsartoolkit5/artoolkit.api.js"></script>
-	<!-- include threex.artoolkit -->
+	<!-- Include threex.artoolkit -->
 	<script src="threex/threex-artoolkitsource.js"></script>
 	<script src="threex/threex-artoolkitcontext.js"></script>
 	<script src="threex/threex-arbasecontrols.js"></script>
 	<script src="threex/threex-armarkercontrols.js"></script>
+	<!-- Include Google Fonts for luxury typography -->
+	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
 	<style>
-		/* Add CSS to create two equal sections */
+		/* Global Styles */
 		body {
 			margin: 0;
 			overflow: hidden;
-			font-family: Monospace;
+			font-family: 'Roboto', sans-serif;
+			background-color: #000;
+			color: #fff;
 			display: flex;
 			flex-direction: column;
 			height: 100vh;
 		}
-		#camera-section {
-			flex: 1; /* Takes up 50% of the height */
-			position: relative;
-			overflow: hidden; /* Prevent scrolling */
-		}
-		#menu-section {
-			flex: 1; /* Takes up 50% of the height */
-			background-color: #f0f0f0;
+
+		/* Navbar Styles */
+		#navbar {
 			display: flex;
 			align-items: center;
-			justify-content: center;
-			z-index: 1; /* Ensure it's above the renderer */
+			justify-content: space-between;
+			padding: 10px 20px;
+			background-color: #000;
+			border-bottom: 1px solid #444;
+			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+			z-index: 1000;
 		}
-		#dropdown-menu {
-			padding: 10px;
-			font-size: 16px;
-			z-index: 2; /* Ensure it's above everything */
+
+		#back-button {
+			font-size: 18px;
+			font-weight: 500;
+			color: #fff;
+			text-decoration: none;
+			cursor: pointer;
 		}
-		canvas {
-			position: absolute;
-			top: 0;
-			left: 0;
-			z-index: 0; /* Ensure it's below the menu */
+
+		#logo {
+			font-family: 'Playfair Display', serif;
+			font-size: 24px;
+			font-weight: 700;
+			color: #fff;
 		}
+
+		/* Camera Section */
+		#camera-section {
+			flex: 1;
+			position: relative;
+			overflow: hidden;
+		}
+
 		#arjs-wrapper {
 			position: relative;
 			width: 100%;
 			height: 100%;
 			overflow: hidden;
 		}
+
+		/* Menu Section */
+		#menu-section {
+			flex: 1;
+			background-color: #111;
+			padding: 20px;
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			justify-content: flex-start;
+			z-index: 1;
+		}
+
+		#dropdown-headline {
+			font-family: 'Playfair Display', serif;
+			font-size: 20px;
+			font-weight: 700;
+			margin-bottom: 10px;
+		}
+
+		#dropdown-menu {
+			padding: 10px;
+			font-size: 16px;
+			background-color: #222;
+			color: #fff;
+			border: 1px solid #444;
+			border-radius: 5px;
+			width: 100%;
+			margin-bottom: 20px;
+		}
+
+		#popular-dishes-headline {
+			font-family: 'Playfair Display', serif;
+			font-size: 20px;
+			font-weight: 700;
+			margin-bottom: 10px;
+		}
+
+		/* Carousel Styles */
+		#carousel {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			width: 100%;
+			overflow: hidden;
+			position: relative;
+		}
+
+		#carousel-container {
+			display: flex;
+			overflow-x: auto;
+			scroll-behavior: smooth;
+			width: 100%;
+			gap: 10px;
+		}
+
+		.carousel-item {
+			flex: 0 0 auto;
+			width: 150px;
+			height: 150px;
+			background-color: #333;
+			border-radius: 10px;
+			display: flex;
+			align-items: flex-end;
+			justify-content: center;
+			position: relative;
+			overflow: hidden;
+		}
+
+		.carousel-item img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+
+		.carousel-item p {
+			position: absolute;
+			bottom: 10px;
+			font-size: 14px;
+			font-weight: 500;
+			color: #fff;
+			text-align: center;
+			background-color: rgba(0, 0, 0, 0.7);
+			padding: 5px;
+			width: 100%;
+		}
+
+		.carousel-button {
+			background-color: rgba(255, 255, 255, 0.2);
+			border: none;
+			color: #fff;
+			font-size: 24px;
+			cursor: pointer;
+			padding: 10px;
+			border-radius: 50%;
+			transition: background-color 0.3s ease;
+		}
+
+		.carousel-button:hover {
+			background-color: rgba(255, 255, 255, 0.4);
+		}
+
+		/* Hide scrollbar for carousel */
+		#carousel-container::-webkit-scrollbar {
+			display: none;
+		}
 	</style>
 </head>
 
 <body>
 
-<!-- Camera Section -->
-<div id="camera-section">
-	<!-- Wrapper for AR.js video and canvas -->
-	<div id="arjs-wrapper"></div>
-</div>
+	<!-- Navbar -->
+	<div id="navbar">
+		<a id="back-button">&#8592; Back</a>
+		<div id="logo">Luxury AR</div>
+	</div>
 
-<!-- Menu Section -->
-<div id="menu-section">
-	<select id="dropdown-menu">
-		<option value="fish">Fish</option>
-		<option value="cube">Cube</option>
-	</select>
-</div>
+	<!-- Camera Section -->
+	<div id="camera-section">
+		<div id="arjs-wrapper"></div>
+	</div>
 
-<script>
-var THREEx = THREEx || {};
-THREEx.wrapperElement = null;
-THREEx.setWrapperElement = function(wrapperEl, video) {
-  THREEx.wrapperElement = wrapperEl;
-  wrapperEl.appendChild(video);
-};
+	<!-- Menu Section -->
+	<div id="menu-section">
+		<div id="dropdown-headline">Select A Dish</div>
+		<select id="dropdown-menu">
+			<option value="fish">Fish</option>
+			<option value="cube">Cube</option>
+		</select>
 
-var scene, camera, renderer, clock, deltaTime, totalTime;
-var arToolkitSource, arToolkitContext;
-var markerRoot1;
-var currentModel = null; // Track the currently loaded model
+		<div id="popular-dishes-headline">Popular Dishes</div>
+		<div id="carousel">
+			<button class="carousel-button" onclick="scrollCarousel(-1)">&#10094;</button>
+			<div id="carousel-container">
+				<div class="carousel-item">
+					<img src="https://via.placeholder.com/150" alt="Dish 1">
+					<p>Grilled Salmon</p>
+				</div>
+				<div class="carousel-item">
+					<img src="https://via.placeholder.com/150" alt="Dish 2">
+					<p>Beef Steak</p>
+				</div>
+				<div class="carousel-item">
+					<img src="https://via.placeholder.com/150" alt="Dish 3">
+					<p>Pasta Alfredo</p>
+				</div>
+				<div class="carousel-item">
+					<img src="https://via.placeholder.com/150" alt="Dish 4">
+					<p>Vegetable Curry</p>
+				</div>
+				<div class="carousel-item">
+					<img src="https://via.placeholder.com/150" alt="Dish 5">
+					<p>Chicken Tikka</p>
+				</div>
+			</div>
+			<button class="carousel-button" onclick="scrollCarousel(1)">&#10095;</button>
+		</div>
+	</div>
 
-initialize();
-animate();
+	<script>
+		var THREEx = THREEx || {};
+		THREEx.wrapperElement = null;
+		THREEx.setWrapperElement = function(wrapperEl, video) {
+			THREEx.wrapperElement = wrapperEl;
+			wrapperEl.appendChild(video);
+		};
 
-function initialize() {
-	scene = new THREE.Scene();
+		var scene, camera, renderer, clock, deltaTime, totalTime;
+		var arToolkitSource, arToolkitContext;
+		var markerRoot1;
+		var currentModel = null; // Track the currently loaded model
 
-	let ambientLight = new THREE.AmbientLight(0xcccccc, 1.0);
-	scene.add(ambientLight);
+		initialize();
+		animate();
 
-	camera = new THREE.Camera();
-	scene.add(camera);
+		function initialize() {
+			scene = new THREE.Scene();
 
-	renderer = new THREE.WebGLRenderer({
-		antialias: true,
-		alpha: true
-	});
-	renderer.setClearColor(new THREE.Color('lightgrey'), 0);
-	renderer.setSize(window.innerWidth, window.innerHeight / 2);
-	renderer.domElement.style.position = 'absolute';
-	renderer.domElement.style.top = '0px';
-	renderer.domElement.style.left = '0px';
+			let ambientLight = new THREE.AmbientLight(0xcccccc, 1.0);
+			scene.add(ambientLight);
 
-	// Append the renderer to the wrapper
-	const wrapper = document.getElementById('arjs-wrapper');
-	wrapper.appendChild(renderer.domElement);
+			camera = new THREE.Camera();
+			scene.add(camera);
 
-	clock = new THREE.Clock();
-	deltaTime = 0;
-	totalTime = 0;
-
-	// Setup AR toolkit source and context
-	arToolkitSource = new THREEx.ArToolkitSource({
-		sourceType: 'webcam',
-	});
-
-	arToolkitSource.init(function onReady() {
-		// Set the wrapper element and reparent the video
-		THREEx.setWrapperElement(wrapper, arToolkitSource.domElement);
-		onResize();
-	});
-
-	window.addEventListener('resize', function () {
-		onResize();
-	});
-
-	arToolkitContext = new THREEx.ArToolkitContext({
-		cameraParametersUrl: 'data/camera_para.dat',
-		detectionMode: 'mono'
-	});
-
-	arToolkitContext.init(function onCompleted() {
-		camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
-	});
-
-	// Setup marker root
-	markerRoot1 = new THREE.Group();
-	scene.add(markerRoot1);
-
-	let markerControls1 = new THREEx.ArMarkerControls(arToolkitContext, markerRoot1, {
-		type: 'pattern',
-		patternUrl: "data/hiro.patt",
-	});
-
-	// Add event listener to the dropdown menu
-	const dropdownMenu = document.getElementById('dropdown-menu');
-	dropdownMenu.addEventListener('change', function (event) {
-		const selectedModel = event.target.value; // Get the selected model name
-		loadModel(selectedModel); // Load the selected model
-	});
-
-	// Load the initial model (e.g., fish)
-	loadModel('fish');
-}
-
-function loadModel(modelName) {
-	// Remove the current model if it exists
-	if (currentModel) {
-		markerRoot1.remove(currentModel);
-		currentModel = null;
-	}
-
-	if (modelName === 'cube') {
-		// Create a cube programmatically
-		const geometry = new THREE.BoxGeometry(1, 1, 1);
-		const material = new THREE.MeshNormalMaterial({
-			transparent: true,
-			opacity: 0.5,
-			side: THREE.DoubleSide
-		});
-		currentModel = new THREE.Mesh(geometry, material);
-		currentModel.position.y = 0.5; // Adjust position
-		markerRoot1.add(currentModel); // Add the cube to the marker
-	} else if (modelName === 'fish') {
-		// Load the fish model from .obj and .mtl files
-		new THREE.MTLLoader()
-			.setPath('models/')
-			.load('fish.mtl', function (materials) {
-				materials.preload();
-				new THREE.OBJLoader()
-					.setMaterials(materials)
-					.setPath('models/')
-					.load('fish.obj', function (group) {
-						currentModel = group.children[0]; // Store the loaded model
-						currentModel.material.side = THREE.DoubleSide;
-						currentModel.position.y = 0.25;
-						currentModel.scale.set(0.25, 0.25, 0.25);
-						markerRoot1.add(currentModel); // Add the model to the marker
-					}, onProgress, onError);
+			renderer = new THREE.WebGLRenderer({
+				antialias: true,
+				alpha: true
 			});
-	}
-}
+			renderer.setClearColor(new THREE.Color('lightgrey'), 0);
+			renderer.setSize(window.innerWidth, window.innerHeight / 2);
+			renderer.domElement.style.position = 'absolute';
+			renderer.domElement.style.top = '0px';
+			renderer.domElement.style.left = '0px';
 
-function onProgress(xhr) {
-	console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-}
+			// Append the renderer to the wrapper
+			const wrapper = document.getElementById('arjs-wrapper');
+			wrapper.appendChild(renderer.domElement);
 
-function onError(xhr) {
-	console.log('An error happened');
-}
+			clock = new THREE.Clock();
+			deltaTime = 0;
+			totalTime = 0;
 
-function update() {
-	if (arToolkitSource.ready !== false)
-		arToolkitContext.update(arToolkitSource.domElement);
-}
+			// Setup AR toolkit source and context
+			arToolkitSource = new THREEx.ArToolkitSource({
+				sourceType: 'webcam',
+			});
 
-function render() {
-	renderer.render(scene, camera);
-}
+			arToolkitSource.init(function onReady() {
+				// Set the wrapper element and reparent the video
+				THREEx.setWrapperElement(wrapper, arToolkitSource.domElement);
+				onResize();
+			});
 
-function animate() {
-	requestAnimationFrame(animate);
-	deltaTime = clock.getDelta();
-	totalTime += deltaTime;
-	update();
-	render();
-}
+			window.addEventListener('resize', function () {
+				onResize();
+			});
 
-function onResize() {
-	const cameraSection = document.getElementById('camera-section');
-	const wrapper = document.getElementById('arjs-wrapper');
-	wrapper.style.width = cameraSection.clientWidth + 'px';
-	wrapper.style.height = cameraSection.clientHeight + 'px';
-	renderer.setSize(cameraSection.clientWidth, cameraSection.clientHeight);
-	arToolkitSource.onResizeElement(); // Updated function
-	arToolkitSource.copyElementSizeTo(renderer.domElement); // Updated function
-	if (arToolkitContext.arController !== null) {
-		arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas); // Updated function
-	}
-}
-</script>
+			arToolkitContext = new THREEx.ArToolkitContext({
+				cameraParametersUrl: 'data/camera_para.dat',
+				detectionMode: 'mono'
+			});
 
+			arToolkitContext.init(function onCompleted() {
+				camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
+			});
+
+			// Setup marker root
+			markerRoot1 = new THREE.Group();
+			scene.add(markerRoot1);
+
+			let markerControls1 = new THREEx.ArMarkerControls(arToolkitContext, markerRoot1, {
+				type: 'pattern',
+				patternUrl: "data/hiro.patt",
+			});
+
+			// Add event listener to the dropdown menu
+			const dropdownMenu = document.getElementById('dropdown-menu');
+			dropdownMenu.addEventListener('change', function (event) {
+				const selectedModel = event.target.value; // Get the selected model name
+				loadModel(selectedModel); // Load the selected model
+			});
+
+			// Load the initial model (e.g., fish)
+			loadModel('fish');
+		}
+
+		function loadModel(modelName) {
+			// Remove the current model if it exists
+			if (currentModel) {
+				markerRoot1.remove(currentModel);
+				currentModel = null;
+			}
+
+			if (modelName === 'cube') {
+				// Create a cube programmatically
+				const geometry = new THREE.BoxGeometry(1, 1, 1);
+				const material = new THREE.MeshNormalMaterial({
+					transparent: true,
+					opacity: 0.5,
+					side: THREE.DoubleSide
+				});
+				currentModel = new THREE.Mesh(geometry, material);
+				currentModel.position.y = 0.5; // Adjust position
+				markerRoot1.add(currentModel); // Add the cube to the marker
+			} else if (modelName === 'fish') {
+				// Load the fish model from .obj and .mtl files
+				new THREE.MTLLoader()
+					.setPath('models/')
+					.load('fish.mtl', function (materials) {
+						materials.preload();
+						new THREE.OBJLoader()
+							.setMaterials(materials)
+							.setPath('models/')
+							.load('fish.obj', function (group) {
+								currentModel = group.children[0]; // Store the loaded model
+								currentModel.material.side = THREE.DoubleSide;
+								currentModel.position.y = 0.25;
+								currentModel.scale.set(0.25, 0.25, 0.25);
+								markerRoot1.add(currentModel); // Add the model to the marker
+							}, onProgress, onError);
+					});
+			}
+		}
+
+		function onProgress(xhr) {
+			console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+		}
+
+		function onError(xhr) {
+			console.log('An error happened');
+		}
+
+		function update() {
+			if (arToolkitSource.ready !== false)
+				arToolkitContext.update(arToolkitSource.domElement);
+		}
+
+		function render() {
+			renderer.render(scene, camera);
+		}
+
+		function animate() {
+			requestAnimationFrame(animate);
+			deltaTime = clock.getDelta();
+			totalTime += deltaTime;
+			update();
+			render();
+		}
+
+		function onResize() {
+			const cameraSection = document.getElementById('camera-section');
+			const wrapper = document.getElementById('arjs-wrapper');
+			wrapper.style.width = cameraSection.clientWidth + 'px';
+			wrapper.style.height = cameraSection.clientHeight + 'px';
+			renderer.setSize(cameraSection.clientWidth, cameraSection.clientHeight);
+			arToolkitSource.onResizeElement(); // Updated function
+			arToolkitSource.copyElementSizeTo(renderer.domElement); // Updated function
+			if (arToolkitContext.arController !== null) {
+				arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas); // Updated function
+			}
+		}
+
+		// Carousel Scroll Functionality
+		function scrollCarousel(direction) {
+			const carousel = document.getElementById('carousel-container');
+			carousel.scrollBy({
+				left: direction * 160, // Adjust scroll distance
+				behavior: 'smooth'
+			});
+		}
+	</script>
 </body>
 </html>
