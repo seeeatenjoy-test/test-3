@@ -32,41 +32,9 @@
 			height: 100vh;
 		}
 
-		/* Top Block with Frosted Glass Effect and Subtle Golden Border */
-		#top-block {
-			position: fixed;
-			top: 0;
-			left: 0;
-			right: 0;
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			padding: 10px 20px;
-			background: rgba(0, 0, 0, 0.7); /* Semi-transparent black */
-			backdrop-filter: blur(10px); /* Frosted glass effect */
-			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-			z-index: 1000;
-			height: 60px; /* Fixed height */
-		}
-
-		#back-button {
-			font-size: 16px;
-			font-weight: 500;
-			color: #fff; /* White color */
-			text-decoration: none;
-			cursor: pointer;
-		}
-
-		#logo {
-			font-size: 20px;
-			font-weight: 700;
-			color: #fff; /* White color */
-		}
-
 		/* Camera Section */
 		#camera-section {
 			flex: 1;
-			margin-top: 60px; /* Offset for the top block */
 			position: relative;
 			overflow: hidden;
 			background: #000; /* Solid black background */
@@ -214,12 +182,6 @@
 
 <body>
 
-	<!-- Top Block -->
-	<div id="top-block">
-		<a id="back-button">&#8592; Back</a>
-		<div id="logo">Luxury AR</div>
-	</div>
-
 	<!-- Camera Section -->
 	<div id="camera-section">
 		<div id="arjs-wrapper"></div>
@@ -292,9 +254,9 @@
 				alpha: true
 			});
 			renderer.setClearColor(new THREE.Color('lightgrey'), 0);
-			renderer.setSize(window.innerWidth, window.innerHeight - 60); /* Adjust for top block */
+			renderer.setSize(window.innerWidth, window.innerHeight / 2); /* Half height for camera */
 			renderer.domElement.style.position = 'absolute';
-			renderer.domElement.style.top = '60px'; /* Offset for top block */
+			renderer.domElement.style.top = '0px';
 			renderer.domElement.style.left = '0px';
 
 			// Append the renderer to the wrapper
@@ -416,8 +378,8 @@
 			const cameraSection = document.getElementById('camera-section');
 			const wrapper = document.getElementById('arjs-wrapper');
 			wrapper.style.width = cameraSection.clientWidth + 'px';
-			wrapper.style.height = (cameraSection.clientHeight - 60) + 'px'; /* Adjust for top block */
-			renderer.setSize(cameraSection.clientWidth, cameraSection.clientHeight - 60); /* Adjust for top block */
+			wrapper.style.height = cameraSection.clientHeight + 'px';
+			renderer.setSize(cameraSection.clientWidth, cameraSection.clientHeight);
 			arToolkitSource.onResizeElement(); // Updated function
 			arToolkitSource.copyElementSizeTo(renderer.domElement); // Updated function
 			if (arToolkitContext.arController !== null) {
