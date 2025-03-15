@@ -24,7 +24,7 @@
 		body {
 			margin: 0;
 			overflow: hidden;
-			font-family: 'Markazi Text', serif; /* Use Markazi Text as the primary font */
+			font-family: 'Markazi Text', serif;
 			background-color: #000;
 			color: #fff;
 			display: flex;
@@ -32,38 +32,51 @@
 			height: 100vh;
 		}
 
-		/* Navbar Styles */
-		#navbar {
+		/* Top Block with Frosted Glass Effect and Golden Border */
+		#top-block {
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
 			padding: 10px 20px;
-			background-color: #000;
-			border-bottom: 1px solid #444;
+			background: rgba(0, 0, 0, 0.7); /* Semi-transparent black */
+			backdrop-filter: blur(10px); /* Frosted glass effect */
+			border-bottom: 2px solid #ffd700; /* Shiny golden border */
 			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 			z-index: 1000;
-			height: 60px; /* Fixed height for mobile */
+			height: 60px; /* Fixed height */
 		}
 
 		#back-button {
-			font-size: 16px; /* Smaller font for mobile */
+			font-size: 16px;
 			font-weight: 500;
-			color: #fff;
+			color: #fff; /* White color */
 			text-decoration: none;
 			cursor: pointer;
 		}
 
 		#logo {
-			font-size: 20px; /* Smaller font for mobile */
+			font-size: 20px;
 			font-weight: 700;
-			color: #fff;
+			color: #fff; /* White color */
 		}
 
-		/* Camera Section */
+		/* Camera Section with Animated Background */
 		#camera-section {
 			flex: 1;
+			margin-top: 60px; /* Offset for the top block */
 			position: relative;
 			overflow: hidden;
+			background: linear-gradient(45deg, #000, #1a1a1a, #000);
+			animation: shimmer 5s infinite alternate;
+		}
+
+		@keyframes shimmer {
+			0% { background-position: 0% 50%; }
+			100% { background-position: 100% 50%; }
 		}
 
 		#arjs-wrapper {
@@ -73,39 +86,58 @@
 			overflow: hidden;
 		}
 
+		/* Golden Metallic Border for AR Model */
+		#arjs-wrapper::after {
+			content: '';
+			position: absolute;
+			top: 10px;
+			left: 10px;
+			right: 10px;
+			bottom: 10px;
+			border: 2px solid #ffd700; /* Golden metallic border */
+			border-radius: 10px;
+			pointer-events: none;
+			z-index: 1;
+			box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); /* Shiny effect */
+		}
+
 		/* Menu Section */
 		#menu-section {
 			flex: 1;
-			background-color: #111;
+			background: rgba(17, 17, 17, 0.8); /* Semi-transparent black */
+			backdrop-filter: blur(10px); /* Frosted glass effect */
 			padding: 20px;
 			display: flex;
 			flex-direction: column;
 			align-items: flex-start;
 			justify-content: flex-start;
 			z-index: 1;
-			overflow-y: auto; /* Allow scrolling if content overflows */
+			overflow-y: auto;
 		}
 
 		#dropdown-headline {
-			font-size: 18px; /* Smaller font for mobile */
+			font-size: 18px;
 			font-weight: 700;
+			color: #fff; /* White color */
 			margin-bottom: 10px;
 		}
 
 		#dropdown-menu {
 			padding: 10px;
-			font-size: 14px; /* Smaller font for mobile */
-			background-color: #222;
-			color: #fff;
+			font-size: 14px;
+			background: rgba(34, 34, 34, 0.8); /* Semi-transparent black */
+			color: #fff; /* White color */
 			border: 1px solid #444;
 			border-radius: 5px;
 			width: 100%;
 			margin-bottom: 20px;
+			backdrop-filter: blur(5px); /* Frosted glass effect */
 		}
 
 		#popular-dishes-headline {
-			font-size: 18px; /* Smaller font for mobile */
+			font-size: 18px;
 			font-weight: 700;
+			color: #fff; /* White color */
 			margin-bottom: 10px;
 		}
 
@@ -129,8 +161,8 @@
 
 		.carousel-item {
 			flex: 0 0 auto;
-			width: 80px; /* Smaller image size for mobile */
-			height: 80px; /* Smaller image size for mobile */
+			width: 80px;
+			height: 80px;
 			background-color: #333;
 			border-radius: 10px;
 			display: flex;
@@ -138,6 +170,7 @@
 			justify-content: center;
 			position: relative;
 			overflow: hidden;
+			border: 1px solid #444; /* Subtle border */
 		}
 
 		.carousel-item img {
@@ -149,33 +182,35 @@
 		.carousel-item p {
 			position: absolute;
 			bottom: 5px;
-			font-size: 10px; /* Smaller font for mobile */
+			font-size: 10px;
 			font-weight: 500;
-			color: #fff;
+			color: #fff; /* White color */
 			text-align: center;
 			background-color: rgba(0, 0, 0, 0.7);
 			padding: 3px;
 			width: 100%;
 		}
 
+		/* Carousel Buttons with Golden Metallic Texture */
 		.carousel-button {
-			background-color: rgba(255, 255, 255, 0.2);
+			background: linear-gradient(45deg, #ffd700, #c0a040); /* Metallic gold */
 			border: none;
 			color: #fff;
-			font-size: 16px; /* Smaller arrow size for mobile */
+			font-size: 16px;
 			cursor: pointer;
-			padding: 6px; /* Smaller padding for mobile */
+			padding: 6px;
 			border-radius: 50%;
-			transition: background-color 0.3s ease;
+			transition: transform 0.3s ease;
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			width: 24px; /* Smaller button size for mobile */
-			height: 24px; /* Smaller button size for mobile */
+			width: 24px;
+			height: 24px;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 		}
 
 		.carousel-button:hover {
-			background-color: rgba(255, 255, 255, 0.4);
+			transform: scale(1.1);
 		}
 
 		/* Hide scrollbar for carousel */
@@ -187,8 +222,8 @@
 
 <body>
 
-	<!-- Navbar -->
-	<div id="navbar">
+	<!-- Top Block -->
+	<div id="top-block">
 		<a id="back-button">&#8592; Back</a>
 		<div id="logo">Luxury AR</div>
 	</div>
@@ -265,9 +300,9 @@
 				alpha: true
 			});
 			renderer.setClearColor(new THREE.Color('lightgrey'), 0);
-			renderer.setSize(window.innerWidth, window.innerHeight / 2);
+			renderer.setSize(window.innerWidth, window.innerHeight - 60); /* Adjust for top block */
 			renderer.domElement.style.position = 'absolute';
-			renderer.domElement.style.top = '0px';
+			renderer.domElement.style.top = '60px'; /* Offset for top block */
 			renderer.domElement.style.left = '0px';
 
 			// Append the renderer to the wrapper
@@ -389,8 +424,8 @@
 			const cameraSection = document.getElementById('camera-section');
 			const wrapper = document.getElementById('arjs-wrapper');
 			wrapper.style.width = cameraSection.clientWidth + 'px';
-			wrapper.style.height = cameraSection.clientHeight + 'px';
-			renderer.setSize(cameraSection.clientWidth, cameraSection.clientHeight);
+			wrapper.style.height = (cameraSection.clientHeight - 60) + 'px'; /* Adjust for top block */
+			renderer.setSize(cameraSection.clientWidth, cameraSection.clientHeight - 60); /* Adjust for top block */
 			arToolkitSource.onResizeElement(); // Updated function
 			arToolkitSource.copyElementSizeTo(renderer.domElement); // Updated function
 			if (arToolkitContext.arController !== null) {
