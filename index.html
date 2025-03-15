@@ -37,7 +37,6 @@
 			flex: 1;
 			position: relative;
 			overflow: hidden;
-			background: #000; /* Solid black background */
 		}
 
 		#arjs-wrapper {
@@ -45,20 +44,6 @@
 			width: 100%;
 			height: 100%;
 			overflow: hidden;
-		}
-
-		/* Subtle Golden Border for AR Model */
-		#arjs-wrapper::after {
-			content: '';
-			position: absolute;
-			top: 10px;
-			left: 10px;
-			right: 10px;
-			bottom: 10px;
-			border: 2px solid rgba(255, 215, 0, 0.3); /* Subtle golden border */
-			border-radius: 10px;
-			pointer-events: none;
-			z-index: 1;
 		}
 
 		/* Menu Section */
