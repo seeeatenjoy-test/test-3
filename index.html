@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<!-- Ensure proper scaling on mobile devices -->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	<title>SEE AR</title>
+	<title>AR Model Switcher</title>
 	<!-- Include three.js library -->
 	<script src='js/three.js'></script>
 	<script src='js/OBJLoader.js'></script>
@@ -25,7 +25,7 @@
 			margin: 0;
 			overflow: hidden;
 			font-family: 'Markazi Text', serif;
-			background: linear-gradient(45deg, #1a1a1a, #000); /* Super light gradient */
+			background-color: #000;
 			color: #fff;
 			display: flex;
 			flex-direction: column;
@@ -37,7 +37,6 @@
 			flex: 1.1; /* Increased by 10% */
 			position: relative;
 			overflow: hidden;
-			background: #000; /* Solid black for camera feed */
 		}
 
 		#arjs-wrapper {
@@ -193,7 +192,7 @@
 	<!-- Bottom Navbar -->
 	<div id="bottom-navbar">
 		<a id="back-button">&#8592; Back</a>
-		<div id="logo">SeeEatEnjoy</div>
+		<div id="logo">Luxury AR</div>
 	</div>
 
 	<script>
