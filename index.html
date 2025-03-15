@@ -32,7 +32,7 @@
 			height: 100vh;
 		}
 
-		/* Top Block with Frosted Glass Effect and Golden Border */
+		/* Top Block with Frosted Glass Effect and Subtle Golden Border */
 		#top-block {
 			position: fixed;
 			top: 0;
@@ -63,19 +63,13 @@
 			color: #fff; /* White color */
 		}
 
-		/* Camera Section with Animated Background */
+		/* Camera Section */
 		#camera-section {
 			flex: 1;
 			margin-top: 60px; /* Offset for the top block */
 			position: relative;
 			overflow: hidden;
-			background: linear-gradient(45deg, #000, #1a1a1a, #000);
-			animation: shimmer 5s infinite alternate;
-		}
-
-		@keyframes shimmer {
-			0% { background-position: 0% 50%; }
-			100% { background-position: 100% 50%; }
+			background: #000; /* Solid black background */
 		}
 
 		#arjs-wrapper {
@@ -85,7 +79,7 @@
 			overflow: hidden;
 		}
 
-		/* Golden Metallic Border for AR Model */
+		/* Subtle Golden Border for AR Model */
 		#arjs-wrapper::after {
 			content: '';
 			position: absolute;
@@ -93,11 +87,10 @@
 			left: 10px;
 			right: 10px;
 			bottom: 10px;
-			border: 2px solid #ffd700; /* Golden metallic border */
+			border: 2px solid rgba(255, 215, 0, 0.3); /* Subtle golden border */
 			border-radius: 10px;
 			pointer-events: none;
 			z-index: 1;
-			box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); /* Shiny effect */
 		}
 
 		/* Menu Section */
@@ -190,9 +183,9 @@
 			width: 100%;
 		}
 
-		/* Carousel Buttons with Golden Metallic Texture */
+		/* Carousel Buttons with Subtle Golden Metallic Texture */
 		.carousel-button {
-			background: linear-gradient(45deg, #ffd700, #c0a040); /* Metallic gold */
+			background: linear-gradient(45deg, rgba(255, 215, 0, 0.5), rgba(192, 160, 64, 0.5)); /* Subtle metallic gold */
 			border: none;
 			color: #fff;
 			font-size: 16px;
