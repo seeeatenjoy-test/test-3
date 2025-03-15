@@ -2,13 +2,12 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<!-- Ensure proper scaling on mobile devices -->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<title>SEE AR Demo</title>
 	<!-- Include three.js library -->
-	<script src='js/three.js'></script>
-	<script src='js/OBJLoader.js'></script>
-	<script src='js/MTLLoader.js'></script>
+	<script src="https://cdn.jsdelivr.net/npm/three@0.146/build/three.min.js"></script>
+	<!-- Include GLTFLoader from CDN -->
+	<script src="https://cdn.jsdelivr.net/npm/three@0.146/examples/js/loaders/GLTFLoader.js"></script>
 	<!-- Include jsartoolkit -->
 	<script src="jsartoolkit5/artoolkit.min.js"></script>
 	<script src="jsartoolkit5/artoolkit.api.js"></script>
@@ -20,6 +19,7 @@
 	<!-- Include Google Fonts for Markazi Text -->
 	<link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;500;600;700&display=swap" rel="stylesheet">
 	<style>
+		/* Your existing CSS styles */
 		/* Global Styles */
 		body {
 			margin: 0;
@@ -167,9 +167,7 @@
 		}
 	</style>
 </head>
-
 <body>
-
 	<!-- Camera Section -->
 	<div id="camera-section">
 		<div id="arjs-wrapper"></div>
@@ -180,7 +178,8 @@
 		<div id="dropdown-headline">Select A Dish</div>
 		<select id="dropdown-menu">
 			<option value="fish">Fish</option>
-			<option value="cube">Cube</option>
+			<option value="sushi">Sushi</option>
+			<option value="burger">Burger</option>
 		</select>
 
 		<div id="popular-dishes-headline">Popular Dishes</div>
@@ -321,43 +320,25 @@
 				currentModel = null;
 			}
 
-			if (modelName === 'cube') {
-				// Create a cube programmatically
-				const geometry = new THREE.BoxGeometry(1, 1, 1);
-				const material = new THREE.MeshNormalMaterial({
-					transparent: true,
-					opacity: 0.5,
-					side: THREE.DoubleSide
-				});
-				currentModel = new THREE.Mesh(geometry, material);
-				currentModel.position.y = 0.5; // Adjust position
-				markerRoot1.add(currentModel); // Add the cube to the marker
-			} else if (modelName === 'fish') {
-				// Load the fish model from .obj and .mtl files
-				new THREE.MTLLoader()
-					.setPath('models/')
-					.load('fish.mtl', function (materials) {
-						materials.preload();
-						new THREE.OBJLoader()
-							.setMaterials(materials)
-							.setPath('models/')
-							.load('fish.obj', function (group) {
-								currentModel = group.children[0]; // Store the loaded model
-								currentModel.material.side = THREE.DoubleSide;
-								currentModel.position.y = 0.25;
-								currentModel.scale.set(0.25, 0.25, 0.25);
-								markerRoot1.add(currentModel); // Add the model to the marker
-							}, onProgress, onError);
-					});
-			}
-		}
+			// Instantiate a loader
+			const loader = new THREE.GLTFLoader();
 
-		function onProgress(xhr) {
-			console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-		}
-
-		function onError(xhr) {
-			console.log('An error happened');
+			// Load a GLB resource
+			loader.load(
+				`models/${modelName}.glb`, // Resource URL
+				function (gltf) {
+					currentModel = gltf.scene;
+					currentModel.scale.set(0.25, 0.25, 0.25); // Adjust scale as needed
+					currentModel.position.y = 0.25; // Adjust position
+					markerRoot1.add(currentModel); // Add the model to the marker
+				},
+				function (xhr) {
+					console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+				},
+				function (error) {
+					console.error('An error happened while loading the model:', error);
+				}
+			);
 		}
 
 		function update() {
