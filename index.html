@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-	<title>AR Model Switcher</title>
+	<title>AR Switcher</title>
 	<!-- include three.js library -->
 	<script src='js/three.js'></script>
 	<script src='js/OBJLoader.js'></script>
@@ -48,6 +48,12 @@
 			left: 0;
 			z-index: 0; /* Ensure it's below the menu */
 		}
+		#arjs-wrapper {
+			position: relative;
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+		}
 	</style>
 </head>
 
@@ -55,7 +61,8 @@
 
 <!-- Camera Section -->
 <div id="camera-section">
-	<!-- The renderer will be appended here by three.js -->
+	<!-- Wrapper for AR.js video and canvas -->
+	<div id="arjs-wrapper"></div>
 </div>
 
 <!-- Menu Section -->
@@ -67,6 +74,13 @@
 </div>
 
 <script>
+var THREEx = THREEx || {};
+THREEx.wrapperElement = null;
+THREEx.setWrapperElement = function(wrapperEl, video) {
+  THREEx.wrapperElement = wrapperEl;
+  wrapperEl.appendChild(video);
+};
+
 var scene, camera, renderer, clock, deltaTime, totalTime;
 var arToolkitSource, arToolkitContext;
 var markerRoot1;
@@ -93,7 +107,10 @@ function initialize() {
 	renderer.domElement.style.position = 'absolute';
 	renderer.domElement.style.top = '0px';
 	renderer.domElement.style.left = '0px';
-	document.getElementById('camera-section').appendChild(renderer.domElement);
+
+	// Append the renderer to the wrapper
+	const wrapper = document.getElementById('arjs-wrapper');
+	wrapper.appendChild(renderer.domElement);
 
 	clock = new THREE.Clock();
 	deltaTime = 0;
@@ -105,6 +122,8 @@ function initialize() {
 	});
 
 	arToolkitSource.init(function onReady() {
+		// Set the wrapper element and reparent the video
+		THREEx.setWrapperElement(wrapper, arToolkitSource.domElement);
 		onResize();
 	});
 
@@ -206,6 +225,9 @@ function animate() {
 
 function onResize() {
 	const cameraSection = document.getElementById('camera-section');
+	const wrapper = document.getElementById('arjs-wrapper');
+	wrapper.style.width = cameraSection.clientWidth + 'px';
+	wrapper.style.height = cameraSection.clientHeight + 'px';
 	renderer.setSize(cameraSection.clientWidth, cameraSection.clientHeight);
 	arToolkitSource.onResizeElement(); // Updated function
 	arToolkitSource.copyElementSizeTo(renderer.domElement); // Updated function
