@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+	<!-- Ensure proper scaling on mobile devices -->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<title>SEE AR Demo</title>
 	<!-- Include three.js library -->
-	<script src="https://cdn.jsdelivr.net/npm/three@0.146/build/three.min.js"></script>
-	<!-- Include GLTFLoader and DRACOLoader from CDN -->
-	<script src="https://cdn.jsdelivr.net/npm/three@0.146/examples/js/loaders/GLTFLoader.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/three@0.146/examples/js/loaders/DRACOLoader.js"></script>
+	<script src='js/three.js'></script>
+	<script src='js/OBJLoader.js'></script>
+	<script src='js/MTLLoader.js'></script>
 	<!-- Include jsartoolkit -->
 	<script src="jsartoolkit5/artoolkit.min.js"></script>
 	<script src="jsartoolkit5/artoolkit.api.js"></script>
@@ -20,10 +20,156 @@
 	<!-- Include Google Fonts for Markazi Text -->
 	<link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;500;600;700&display=swap" rel="stylesheet">
 	<style>
-		/* Your existing CSS styles */
+		/* Global Styles */
+		body {
+			margin: 0;
+			overflow: hidden;
+			font-family: 'Markazi Text', serif;
+			background-color: #000;
+			color: #fff;
+			display: flex;
+			flex-direction: column;
+			height: 100vh;
+		}
+
+		/* Camera Section */
+		#camera-section {
+			flex: 1.1; /* Increased by 10% */
+			position: relative;
+			overflow: hidden;
+		}
+
+		#arjs-wrapper {
+			position: relative;
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+		}
+
+		/* Menu Section */
+		#menu-section {
+			flex: 0.9; /* Adjusted to fit the remaining space */
+			background: rgba(17, 17, 17, 0.8); /* Semi-transparent black */
+			backdrop-filter: blur(10px); /* Frosted glass effect */
+			padding: 20px;
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			justify-content: flex-start;
+			z-index: 1;
+			overflow-y: hidden; /* Prevent scrolling */
+		}
+
+		#dropdown-headline {
+			font-size: 18px;
+			font-weight: 700;
+			color: #fff; /* White color */
+			margin-bottom: 10px;
+		}
+
+		#dropdown-menu {
+			padding: 10px;
+			font-size: 14px;
+			background: rgba(34, 34, 34, 0.8); /* Semi-transparent black */
+			color: #fff; /* White color */
+			border: 1px solid #444;
+			border-radius: 5px;
+			width: 100%;
+			margin-bottom: 20px;
+			backdrop-filter: blur(5px); /* Frosted glass effect */
+		}
+
+		#popular-dishes-headline {
+			font-size: 18px;
+			font-weight: 700;
+			color: #fff; /* White color */
+			margin-bottom: 10px;
+		}
+
+		/* Carousel Styles */
+		#carousel {
+			display: flex;
+			align-items: center;
+			justify-content: flex-start;
+			width: 100%;
+			overflow-x: auto; /* Horizontal scrolling */
+			scroll-behavior: smooth;
+			gap: 10px;
+		}
+
+		.carousel-item {
+			flex: 0 0 auto;
+			width: 80px;
+			height: 80px;
+			background-color: #333;
+			border-radius: 10px;
+			display: flex;
+			align-items: flex-end;
+			justify-content: center;
+			position: relative;
+			overflow: hidden;
+			border: 1px solid #444; /* Subtle border */
+		}
+
+		.carousel-item img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+
+		.carousel-item p {
+			position: absolute;
+			bottom: 5px;
+			font-size: 10px;
+			font-weight: 500;
+			color: #fff; /* White color */
+			text-align: center;
+			background-color: rgba(0, 0, 0, 0.7);
+			padding: 3px;
+			width: 100%;
+		}
+
+		/* Bottom Navbar */
+		#bottom-navbar {
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 10px 20px;
+			background: rgba(0, 0, 0, 0.9); /* Semi-transparent black */
+			backdrop-filter: blur(10px); /* Frosted glass effect */
+			border-top: 1px solid rgba(255, 255, 255, 0.1); /* White glow */
+			box-shadow: 0 -2px 10px rgba(255, 255, 255, 0.1); /* White shadow */
+			z-index: 1000;
+			height: 60px; /* Fixed height */
+		}
+
+		#back-button {
+			font-size: 16px;
+			font-weight: 500;
+			color: #fff; /* White color */
+			text-decoration: none;
+			cursor: pointer;
+		}
+
+		#logo {
+			font-size: 20px;
+			font-weight: 700;
+			color: #fff; /* White color */
+		}
+
+		/* Hide scrollbar for carousel */
+		#carousel::-webkit-scrollbar {
+			display: none;
+		}
 	</style>
 </head>
+
 <body>
+
 	<!-- Camera Section -->
 	<div id="camera-section">
 		<div id="arjs-wrapper"></div>
@@ -34,8 +180,7 @@
 		<div id="dropdown-headline">Select A Dish</div>
 		<select id="dropdown-menu">
 			<option value="fish">Fish</option>
-			<option value="sushi">Sushi</option>
-			<option value="burger">Burger</option>
+			<option value="cube">Cube</option>
 		</select>
 
 		<div id="popular-dishes-headline">Popular Dishes</div>
@@ -176,30 +321,43 @@
 				currentModel = null;
 			}
 
-			// Instantiate a loader
-			const loader = new THREE.GLTFLoader();
+			if (modelName === 'cube') {
+				// Create a cube programmatically
+				const geometry = new THREE.BoxGeometry(1, 1, 1);
+				const material = new THREE.MeshNormalMaterial({
+					transparent: true,
+					opacity: 0.5,
+					side: THREE.DoubleSide
+				});
+				currentModel = new THREE.Mesh(geometry, material);
+				currentModel.position.y = 0.5; // Adjust position
+				markerRoot1.add(currentModel); // Add the cube to the marker
+			} else if (modelName === 'fish') {
+				// Load the fish model from .obj and .mtl files
+				new THREE.MTLLoader()
+					.setPath('models/')
+					.load('fish.mtl', function (materials) {
+						materials.preload();
+						new THREE.OBJLoader()
+							.setMaterials(materials)
+							.setPath('models/')
+							.load('fish.obj', function (group) {
+								currentModel = group.children[0]; // Store the loaded model
+								currentModel.material.side = THREE.DoubleSide;
+								currentModel.position.y = 0.25;
+								currentModel.scale.set(0.25, 0.25, 0.25);
+								markerRoot1.add(currentModel); // Add the model to the marker
+							}, onProgress, onError);
+					});
+			}
+		}
 
-			// Optional: Provide a DRACOLoader instance to decode compressed mesh data
-			const dracoLoader = new THREE.DRACOLoader();
-			dracoLoader.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.146/examples/js/libs/draco/');
-			loader.setDRACOLoader(dracoLoader);
+		function onProgress(xhr) {
+			console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+		}
 
-			// Load a GLB resource
-			loader.load(
-				`models/${modelName}.glb`, // Resource URL
-				function (gltf) {
-					currentModel = gltf.scene;
-					currentModel.scale.set(0.25, 0.25, 0.25); // Adjust scale as needed
-					currentModel.position.y = 0.25; // Adjust position
-					markerRoot1.add(currentModel); // Add the model to the marker
-				},
-				function (xhr) {
-					console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-				},
-				function (error) {
-					console.error('An error happened while loading the model:', error);
-				}
-			);
+		function onError(xhr) {
+			console.log('An error happened');
 		}
 
 		function update() {
