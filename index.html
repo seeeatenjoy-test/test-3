@@ -2,17 +2,22 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+	<!-- Ensure proper scaling on mobile devices -->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<title>SEE AR Demo</title>
+	<!-- Include three.js library -->
 	<script src='js/three.js'></script>
 	<script src='js/OBJLoader.js'></script>
 	<script src='js/MTLLoader.js'></script>
+	<!-- Include jsartoolkit -->
 	<script src="jsartoolkit5/artoolkit.min.js"></script>
 	<script src="jsartoolkit5/artoolkit.api.js"></script>
+	<!-- Include threex.artoolkit -->
 	<script src="threex/threex-artoolkitsource.js"></script>
 	<script src="threex/threex-artoolkitcontext.js"></script>
 	<script src="threex/threex-arbasecontrols.js"></script>
 	<script src="threex/threex-armarkercontrols.js"></script>
+	<!-- Include Google Fonts for Markazi Text -->
 	<link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;500;600;700&display=swap" rel="stylesheet">
 	<style>
 		/* Global Styles */
@@ -29,7 +34,7 @@
 
 		/* Camera Section */
 		#camera-section {
-			flex: 1.1;
+			flex: 1.1; /* Increased by 10% */
 			position: relative;
 			overflow: hidden;
 		}
@@ -43,41 +48,41 @@
 
 		/* Menu Section */
 		#menu-section {
-			flex: 0.9;
-			background: rgba(17, 17, 17, 0.8);
-			backdrop-filter: blur(10px);
+			flex: 0.9; /* Adjusted to fit the remaining space */
+			background: rgba(17, 17, 17, 0.8); /* Semi-transparent black */
+			backdrop-filter: blur(10px); /* Frosted glass effect */
 			padding: 20px;
 			display: flex;
 			flex-direction: column;
 			align-items: flex-start;
 			justify-content: flex-start;
 			z-index: 1;
-			overflow-y: hidden;
+			overflow-y: hidden; /* Prevent scrolling */
 		}
 
 		#dropdown-headline {
 			font-size: 18px;
 			font-weight: 700;
-			color: #fff;
+			color: #fff; /* White color */
 			margin-bottom: 10px;
 		}
 
 		#dropdown-menu {
 			padding: 10px;
 			font-size: 14px;
-			background: rgba(34, 34, 34, 0.8);
-			color: #fff;
+			background: rgba(34, 34, 34, 0.8); /* Semi-transparent black */
+			color: #fff; /* White color */
 			border: 1px solid #444;
 			border-radius: 5px;
 			width: 100%;
 			margin-bottom: 20px;
-			backdrop-filter: blur(5px);
+			backdrop-filter: blur(5px); /* Frosted glass effect */
 		}
 
 		#popular-dishes-headline {
 			font-size: 18px;
 			font-weight: 700;
-			color: #fff;
+			color: #fff; /* White color */
 			margin-bottom: 10px;
 		}
 
@@ -87,7 +92,7 @@
 			align-items: center;
 			justify-content: flex-start;
 			width: 100%;
-			overflow-x: auto;
+			overflow-x: auto; /* Horizontal scrolling */
 			scroll-behavior: smooth;
 			gap: 10px;
 		}
@@ -103,7 +108,7 @@
 			justify-content: center;
 			position: relative;
 			overflow: hidden;
-			border: 1px solid #444;
+			border: 1px solid #444; /* Subtle border */
 		}
 
 		.carousel-item img {
@@ -117,7 +122,7 @@
 			bottom: 5px;
 			font-size: 10px;
 			font-weight: 500;
-			color: #fff;
+			color: #fff; /* White color */
 			text-align: center;
 			background-color: rgba(0, 0, 0, 0.7);
 			padding: 3px;
@@ -134,18 +139,18 @@
 			align-items: center;
 			justify-content: space-between;
 			padding: 10px 20px;
-			background: rgba(0, 0, 0, 0.9);
-			backdrop-filter: blur(10px);
-			border-top: 1px solid rgba(255, 255, 255, 0.1);
-			box-shadow: 0 -2px 10px rgba(255, 255, 255, 0.1);
+			background: rgba(0, 0, 0, 0.9); /* Semi-transparent black */
+			backdrop-filter: blur(10px); /* Frosted glass effect */
+			border-top: 1px solid rgba(255, 255, 255, 0.1); /* White glow */
+			box-shadow: 0 -2px 10px rgba(255, 255, 255, 0.1); /* White shadow */
 			z-index: 1000;
-			height: 60px;
+			height: 60px; /* Fixed height */
 		}
 
 		#back-button {
 			font-size: 16px;
 			font-weight: 500;
-			color: #fff;
+			color: #fff; /* White color */
 			text-decoration: none;
 			cursor: pointer;
 		}
@@ -153,7 +158,7 @@
 		#logo {
 			font-size: 20px;
 			font-weight: 700;
-			color: #fff;
+			color: #fff; /* White color */
 		}
 
 		/* Hide scrollbar for carousel */
@@ -164,6 +169,7 @@
 </head>
 
 <body>
+
 	<!-- Camera Section -->
 	<div id="camera-section">
 		<div id="arjs-wrapper"></div>
@@ -174,7 +180,7 @@
 		<div id="dropdown-headline">Select A Dish</div>
 		<select id="dropdown-menu">
 			<option value="fish">Fish</option>
-			<option value="burger">Burger</option>
+			<option value="cube">Cube</option>
 		</select>
 
 		<div id="popular-dishes-headline">Popular Dishes</div>
@@ -200,8 +206,9 @@
 		var scene, camera, renderer, clock, deltaTime, totalTime;
 		var arToolkitSource, arToolkitContext;
 		var markerRoot1;
-		var currentModel = null;
+		var currentModel = null; // Track the currently loaded model
 
+		// List of dishes with their image names
 		const dishes = [
 			{ name: "Chicken Tikka", image: "chicken-tikka.jpg" },
 			{ name: "Pasta Alfredo", image: "pasta-alfredo.jpg" },
@@ -210,6 +217,7 @@
 			{ name: "Vegetable Curry", image: "vegetable-curry.jpg" }
 		];
 
+		// Function to dynamically add carousel items
 		function populateCarousel() {
 			const carousel = document.getElementById('carousel');
 			dishes.forEach(dish => {
@@ -217,7 +225,7 @@
 				carouselItem.classList.add('carousel-item');
 
 				const img = document.createElement('img');
-				img.src = `images/${dish.image}`;
+				img.src = `images/${dish.image}`; // Path to images folder
 				img.alt = dish.name;
 
 				const p = document.createElement('p');
@@ -229,6 +237,7 @@
 			});
 		}
 
+		// Initialize the carousel
 		populateCarousel();
 
 		initialize();
@@ -248,11 +257,12 @@
 				alpha: true
 			});
 			renderer.setClearColor(new THREE.Color('lightgrey'), 0);
-			renderer.setSize(window.innerWidth, window.innerHeight * 0.6);
+			renderer.setSize(window.innerWidth, window.innerHeight * 0.6); /* Adjusted for 10% increase */
 			renderer.domElement.style.position = 'absolute';
 			renderer.domElement.style.top = '0px';
 			renderer.domElement.style.left = '0px';
 
+			// Append the renderer to the wrapper
 			const wrapper = document.getElementById('arjs-wrapper');
 			wrapper.appendChild(renderer.domElement);
 
@@ -260,11 +270,13 @@
 			deltaTime = 0;
 			totalTime = 0;
 
+			// Setup AR toolkit source and context
 			arToolkitSource = new THREEx.ArToolkitSource({
 				sourceType: 'webcam',
 			});
 
 			arToolkitSource.init(function onReady() {
+				// Set the wrapper element and reparent the video
 				THREEx.setWrapperElement(wrapper, arToolkitSource.domElement);
 				onResize();
 			});
@@ -282,6 +294,7 @@
 				camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
 			});
 
+			// Setup marker root
 			markerRoot1 = new THREE.Group();
 			scene.add(markerRoot1);
 
@@ -290,13 +303,15 @@
 				patternUrl: "data/hiro.patt",
 			});
 
+			// Add event listener to the dropdown menu
 			const dropdownMenu = document.getElementById('dropdown-menu');
 			dropdownMenu.addEventListener('change', function (event) {
-				const selectedModel = event.target.value; // Get the selected value (e.g., "fish" or "burger")
-				loadModel(selectedModel); // Load the corresponding model
+				const selectedModel = event.target.value; // Get the selected model name
+				loadModel(selectedModel); // Load the selected model
 			});
 
-			loadModel('fish'); // Load the initial model
+			// Load the initial model (e.g., fish)
+			loadModel('fish');
 		}
 
 		function loadModel(modelName) {
@@ -306,22 +321,35 @@
 				currentModel = null;
 			}
 
-			// Load the .mtl and .obj files based on the selected value
-			new THREE.MTLLoader()
-				.setPath('models/')
-				.load(`${modelName}.mtl`, function (materials) {
-					materials.preload();
-					new THREE.OBJLoader()
-						.setMaterials(materials)
-						.setPath('models/')
-						.load(`${modelName}.obj`, function (group) {
-							currentModel = group.children[0];
-							currentModel.material.side = THREE.DoubleSide;
-							currentModel.position.y = 0.25;
-							currentModel.scale.set(0.25, 0.25, 0.25);
-							markerRoot1.add(currentModel);
-						}, onProgress, onError);
+			if (modelName === 'cube') {
+				// Create a cube programmatically
+				const geometry = new THREE.BoxGeometry(1, 1, 1);
+				const material = new THREE.MeshNormalMaterial({
+					transparent: true,
+					opacity: 0.5,
+					side: THREE.DoubleSide
 				});
+				currentModel = new THREE.Mesh(geometry, material);
+				currentModel.position.y = 0.5; // Adjust position
+				markerRoot1.add(currentModel); // Add the cube to the marker
+			} else if (modelName === 'fish') {
+				// Load the fish model from .obj and .mtl files
+				new THREE.MTLLoader()
+					.setPath('models/')
+					.load('fish.mtl', function (materials) {
+						materials.preload();
+						new THREE.OBJLoader()
+							.setMaterials(materials)
+							.setPath('models/')
+							.load('fish.obj', function (group) {
+								currentModel = group.children[0]; // Store the loaded model
+								currentModel.material.side = THREE.DoubleSide;
+								currentModel.position.y = 0.25;
+								currentModel.scale.set(0.25, 0.25, 0.25);
+								markerRoot1.add(currentModel); // Add the model to the marker
+							}, onProgress, onError);
+					});
+			}
 		}
 
 		function onProgress(xhr) {
@@ -355,10 +383,10 @@
 			wrapper.style.width = cameraSection.clientWidth + 'px';
 			wrapper.style.height = cameraSection.clientHeight + 'px';
 			renderer.setSize(cameraSection.clientWidth, cameraSection.clientHeight);
-			arToolkitSource.onResizeElement();
-			arToolkitSource.copyElementSizeTo(renderer.domElement);
+			arToolkitSource.onResizeElement(); // Updated function
+			arToolkitSource.copyElementSizeTo(renderer.domElement); // Updated function
 			if (arToolkitContext.arController !== null) {
-				arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas);
+				arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas); // Updated function
 			}
 		}
 	</script>
